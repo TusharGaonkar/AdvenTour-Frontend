@@ -36,6 +36,7 @@ module.exports = {
       'off',
       { devDependencies: false, optionalDependencies: false, peerDependencies: false },
     ],
+    'react/button-has-type': 'off',
     'import/extensions': [
       'error',
       'always',
