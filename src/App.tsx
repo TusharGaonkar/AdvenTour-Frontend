@@ -1,7 +1,13 @@
+import { NextUIProvider } from '@nextui-org/react';
 import './index.css';
+import LoginForm from './pages/loginForm';
 
 function App() {
-  return <div className="text-2xl text-blue-300"> Hello world</div>;
+  return (
+    <NextUIProvider>
+      <LoginForm />
+    </NextUIProvider>
+  );
 }
 
 export default App;
