@@ -4,13 +4,13 @@ import { NavLink } from 'react-router-dom';
 
 const LoginForm = () => (
   <div className="flex flex-row justify-center bg-white rounded-lg bg-red p-7 md:flex-row">
-    <div className="items-start justify-between p-12 md:flex md:flex-col">
+    <div className="items-start justify-between p-12 md:flex md:flex-col max-w-[485px]">
       <div className="flex flex-col items-start gap-12">
         <div className="flex items-center justify-between">
           <h1 className="text-4xl font-bold">Welcome back</h1>
         </div>
-        <p className="max-w-lg text-lg">
-          Sign in to your account to view your bookings , if you are a new user please
+        <p className="max-w-lg text-lg text-start">
+          Sign in to your account to view your bookings,if you are a new user please
           <span>
             <NavLink to="/register" className="self-center ml-1 font-semibold text-orange-400">
               register here
