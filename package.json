@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
+    "@types/mapbox-gl": "^2.7.19",
     "eslint-config-airbnb": "^19.0.4",
     "framer-motion": "^10.16.5",
+    "mapbox-gl": "^2.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
+    "react-map-gl": "^7.1.6",
+    "react-photo-view": "^1.2.3",
     "react-router-dom": "^6.19.0",
     "react-star-ratings": "^2.3.0"
   },
