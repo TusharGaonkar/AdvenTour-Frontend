@@ -5,7 +5,7 @@ import LoginForm from './pages/loginForm';
 import SignupForm from './pages/SignUpForm';
 import AdventourLandingPage from './pages/AdventourLandingPage';
 import ToursPage from './pages/ToursPage';
-
+import TourDetailsPage from './pages/TourDetailsPage';
 function App() {
   return (
     <NextUIProvider>
@@ -15,6 +15,7 @@ function App() {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<SignupForm />} />
           <Route path="/tours" element={<ToursPage />} />
+          <Route path="/tours/:id" element={<TourDetailsPage />} />
         </Routes>
       </BrowserRouter>
     </NextUIProvider>
