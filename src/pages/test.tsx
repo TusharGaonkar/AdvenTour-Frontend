@@ -61,6 +61,16 @@ export const tour = {
           image:
             'https://images.travelandleisureasia.com/wp-content/uploads/sites/2/2022/12/15180616/Adventure-Destinations-In-India-1.jpg?tr=w-1200,h-900',
         },
+        {
+          activityName: 'Water Rafting',
+          place: 'Lakshman Jhula',
+          location: {
+            type: 'Point',
+            coordinates: [30.1043, 78.2856],
+          },
+          image:
+            'https://images.travelandleisureasia.com/wp-content/uploads/sites/2/2022/12/15180616/Adventure-Destinations-In-India-1.jpg?tr=w-1200,h-900',
+        },
       ],
       foodIncluded: 'Breakfast, Lunch, & Dinner',
       accommodationIncluded: 'Hotel Ganges',
@@ -78,6 +88,26 @@ export const tour = {
           },
           image:
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdO6zYI0IPa0z9yycPBs41LHYvpZoSjUut0w&usqp=CAU',
+        },
+        {
+          activityName: 'Zip Lining',
+          place: 'Neem Beach',
+          location: {
+            type: 'Point',
+            coordinates: [30.1167, 78.3333],
+          },
+          image:
+            'https://images.travelandleisureasia.com/wp-content/uploads/sites/2/2022/12/15180616/Adventure-Destinations-In-India-1.jpg?tr=w-1200,h-900',
+        },
+        {
+          activityName: 'Zip Lining',
+          place: 'Neem Beach',
+          location: {
+            type: 'Point',
+            coordinates: [30.1167, 78.3333],
+          },
+          image:
+            'https://images.travelandleisureasia.com/wp-content/uploads/sites/2/2022/12/15180616/Adventure-Destinations-In-India-1.jpg?tr=w-1200,h-900',
         },
         {
           activityName: 'Zip Lining',
