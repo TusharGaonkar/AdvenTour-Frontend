@@ -20,7 +20,7 @@ const userSliceInitialState: UserSliceInitialStateType = {
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: 'userInfo',
   initialState: userSliceInitialState,
   reducers: {
     setCredentials: (state, action) => {
