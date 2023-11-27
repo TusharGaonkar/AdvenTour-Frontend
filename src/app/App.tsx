@@ -12,8 +12,8 @@ import '../index.css';
 
 function App() {
   return (
-    <NextUIProvider>
-      <Provider store={store}>
+    <Provider store={store}>
+      <NextUIProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<AdventourLandingPage />} />
@@ -24,8 +24,8 @@ function App() {
           </Routes>
           <Toaster position="top-right" reverseOrder={false} />
         </BrowserRouter>
-      </Provider>
-    </NextUIProvider>
+      </NextUIProvider>
+    </Provider>
   );
 }
 

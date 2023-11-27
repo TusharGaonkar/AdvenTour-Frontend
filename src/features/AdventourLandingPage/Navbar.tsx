@@ -1,4 +1,5 @@
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from '@nextui-org/react';
+import { NavLink } from 'react-router-dom';
 
 const NavBar = () => (
   <Navbar>
@@ -24,11 +25,11 @@ const NavBar = () => (
     </NavbarContent>
     <NavbarContent justify="end">
       <NavbarItem className="hidden lg:flex">
-        <Link href="/login">Login</Link>
+        <NavLink to="/login">Login</NavLink>
       </NavbarItem>
       <NavbarItem>
-        <Button as={Link} color="primary" href="/register" variant="flat">
-          Sign Up
+        <Button color="primary" variant="flat">
+          <NavLink to="/register">Register</NavLink>
         </Button>
       </NavbarItem>
     </NavbarContent>

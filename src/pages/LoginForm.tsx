@@ -34,8 +34,6 @@ const LoginForm = () => {
   };
 
   useEffect(() => {
-    if (isLoggedIn) navigate(-1);
-
     if (isError && error) {
       if (
         'data' in error &&
@@ -49,17 +47,18 @@ const LoginForm = () => {
       } else {
         toast.error('Something went wrong, please try again...');
       }
-    }
-
-    if (isSuccess && response && response.data && 'user' in response.data) {
+    } else if (isSuccess && response && response.data && 'user' in response.data) {
       const { user } = response.data;
       toast.success(`Welcome back ${user.userName}!`, {
         className: 'text-sm',
       });
       dispatch(setCredentials(response?.data));
-      navigate(-1);
     }
-  }, [isError, isSuccess, response, error, dispatch, navigate, isLoggedIn]);
+  }, [isError, isSuccess, response, error, dispatch]);
+
+  useEffect(() => {
+    if (isLoggedIn) navigate(-1);
+  }, [navigate, isLoggedIn]);
 
   return (
     <div className="flex flex-row justify-center bg-white rounded-lg bg-red p-7 md:flex-row">
