@@ -2,12 +2,12 @@
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Input, Button, Progress } from '@nextui-org/react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import coolBoy from '/3d-casual-life-face-scan.png';
 import loginFormSchema, { type LoginFormSchemaType } from '../validators/LoginFormValidator';
 import { useLoginUserMutation } from '../redux/slices/authSlice';
@@ -16,7 +16,10 @@ import { setCredentials } from '../redux/slices/userSlice';
 const LoginForm = () => {
   const [loginUser, { isLoading, isError, isSuccess, data: response, error }] =
     useLoginUserMutation();
+
+  const { isLoggedIn } = useSelector<any>((state) => state.userInfo);
   const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -25,11 +28,14 @@ const LoginForm = () => {
     resolver: zodResolver(loginFormSchema),
   });
 
+  const navigate = useNavigate();
   const onSubmit: SubmitHandler<LoginFormSchemaType> = (formData: LoginFormSchemaType) => {
     loginUser(formData);
   };
 
   useEffect(() => {
+    if (isLoggedIn) navigate(-1);
+
     if (isError && error) {
       if (
         'data' in error &&
@@ -51,8 +57,9 @@ const LoginForm = () => {
         className: 'text-sm',
       });
       dispatch(setCredentials(response?.data));
+      navigate(-1);
     }
-  }, [isError, isSuccess, response, error, dispatch]);
+  }, [isError, isSuccess, response, error, dispatch, navigate, isLoggedIn]);
 
   return (
     <div className="flex flex-row justify-center bg-white rounded-lg bg-red p-7 md:flex-row">

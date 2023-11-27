@@ -4,10 +4,12 @@ export interface LoginResponse {
   status: string;
   data: Data;
 }
+
 interface Data {
   user: User;
   token: string;
 }
+
 export interface User {
   _id: string;
   userName: string;
