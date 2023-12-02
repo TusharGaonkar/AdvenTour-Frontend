@@ -152,4 +152,153 @@ export const tour = {
       accommodationIncluded: 'Hotel Ganges',
     },
   ],
+  tourCategory: ['Trekking', 'Bungee Jumping', 'Water Rafting'],
+};
+
+const tour2 = {
+  title: 'Manali Adventure Expedition',
+  description:
+    'Embark on an adrenaline-pumping adventure in Manali! This 4-day expedition offers a thrilling experience with activities like paragliding, mountain biking, and camping amidst the Himalayas.',
+  mainCoverImage:
+    'https://media1.thrillophilia.com/filestore/um5fkj39cviuw4lkkubv8io0q68v_1585582939_shutterstock_562441120.jpg?dpr=1&w=1920',
+  additionalImages: [
+    'https://media1.thrillophilia.com/filestore/j4z0u7ptcbgjderxwz9iylofhlqc_1585582937_1544092261_skiing_in_manali_(1).jpg.jpg?dpr=1&w=1920',
+    'https://media1.thrillophilia.com/filestore/ndlxf8v5luq59fac5molql65a6cq_virginia-skiing-and-snowboarding.jpg?dpr=1&w=1920',
+
+    'https://media1.thrillophilia.com/filestore/e2u0i5hmd1etvhozybb3bt4fihy3_1585582939_shutterstock_1657213552.jpg?dpr=1&w=1920',
+  ],
+  tourLocation: {
+    type: 'Point',
+    coordinates: [32.2396, 77.1887],
+  },
+  createdBy: '123456789',
+  tourDurationInDays: 4,
+  tourStartDates: ['2023-12-05', '2023-12-12', '2023-12-19'],
+  repeatsEachMonth: false,
+  tourStartTime: '10:00 AM',
+  priceInRupees: 25000,
+  discountInRupees: 5000,
+  ageGroups: {
+    minAge: 18,
+    maxAge: 55,
+  },
+  tourMaxCapacity: 25,
+  maxPeoplePerBooking: 4,
+  tourDifficulty: 'High',
+  liveGuideLanguages: ['English', 'Hindi'],
+  whatsIncluded: ['Accommodation', 'Food', 'Transportation', 'Activities'],
+  whatsNotIncluded: ['Personal expenses', 'Travel insurance'],
+  additionalInformation:
+    'This expedition requires good physical fitness due to high-altitude activities. Participants should be comfortable with mountainous terrain and varying weather conditions.',
+  cancellationPolicy:
+    'Full refund if cancelled 45 days or more in advance. 75% refund if cancelled 30-44 days in advance. No refund if cancelled less than 30 days in advance.',
+  FAQ: [
+    {
+      question: 'What is the difficulty level of this expedition?',
+      answer:
+        'This expedition is rated as high difficulty due to challenging terrain and high-altitude activities like paragliding and mountain biking. Participants should be physically fit and acclimated to mountainous regions.',
+    },
+    {
+      question: 'What is the weather like in Manali?',
+      answer:
+        'Manali experiences a temperate climate with summers being mild and pleasant, while winters can be snowy and cold. The best time to visit for adventure activities is usually during the summer months from May to July.',
+    },
+  ],
+  itinerary: [
+    {
+      day: 1,
+      description:
+        'Arrival in Manali. Check into the campsite and acclimatize to the surroundings.',
+      activities: [
+        {
+          activityName: 'Campsite Set-Up',
+          place: 'Solang Valley',
+          location: {
+            type: 'Point',
+            coordinates: [32.3998, 77.1646],
+          },
+          image:
+            'https://media1.thrillophilia.com/filestore/j4z0u7ptcbgjderxwz9iylofhlqc_1585582937_1544092261_skiing_in_manali_(1).jpg.jpg?dpr=1&w=1920',
+        },
+      ],
+      foodIncluded: 'Lunch & Dinner',
+      accommodationIncluded: 'Tented Campsite',
+    },
+    {
+      day: 2,
+      description: 'Engage in thrilling activities amidst the Himalayas.',
+      activities: [
+        {
+          activityName: 'Paragliding',
+          place: 'Gulaba',
+          location: {
+            type: 'Point',
+            coordinates: [32.3175, 77.1285],
+          },
+          image:
+            'https://media1.thrillophilia.com/filestore/rj0xopf543tem909dor146rp24e8_1586014675_skiing-in-manali-head-441.jpeg?dpr=1&w=1920',
+        },
+        {
+          activityName: 'Mountain Biking',
+          place: 'Naggar Road',
+          location: {
+            type: 'Point',
+            coordinates: [32.2588, 77.1886],
+          },
+          image:
+            'https://media1.thrillophilia.com/filestore/v23qae3c7ujb61tmdwvprj49y6a5_1585582937_1544092257_skiing_in_manali_(3).jpg.webp?dpr=1&w=1920',
+        },
+      ],
+      foodIncluded: 'Breakfast, Lunch & Dinner',
+      accommodationIncluded: 'Tented Campsite',
+    },
+    {
+      day: 3,
+      description: 'Explore more adventurous pursuits in the scenic landscapes.',
+      activities: [
+        {
+          activityName: 'River Rafting',
+          place: 'Beas River',
+          location: {
+            type: 'Point',
+            coordinates: [32.2664, 77.1864],
+          },
+          image:
+            'https://media1.thrillophilia.com/filestore/v23qae3c7ujb61tmdwvprj49y6a5_1585582937_1544092257_skiing_in_manali_(3).jpg.webp?dpr=1&w=1920',
+        },
+        {
+          activityName: 'Rock Climbing',
+          place: 'Old Manali',
+          location: {
+            type: 'Point',
+            coordinates: [32.2554, 77.1866],
+          },
+          image:
+            'https://media1.thrillophilia.com/filestore/v23qae3c7ujb61tmdwvprj49y6a5_1585582937_1544092257_skiing_in_manali_(3).jpg.webp?dpr=1&w=1920',
+        },
+      ],
+      foodIncluded: 'Breakfast, Lunch & Dinner',
+      accommodationIncluded: 'Tented Campsite',
+    },
+    {
+      day: 4,
+      description:
+        'Conclude the expedition with a sense of accomplishment and departure from Manali.',
+      activities: [
+        {
+          activityName: 'Closing Ceremony',
+          place: 'Solang Valley',
+          location: {
+            type: 'Point',
+            coordinates: [32.3998, 77.1646],
+          },
+          image:
+            'https://media1.thrillophilia.com/filestore/v23qae3c7ujb61tmdwvprj49y6a5_1585582937_1544092257_skiing_in_manali_(3).jpg.webp?dpr=1&w=1920',
+        },
+      ],
+      foodIncluded: 'Breakfast & Lunch',
+      accommodationIncluded: 'None',
+    },
+  ],
+  tourCategory: ['Hiking', 'Skating', 'Paragliding', 'Mountain Biking'],
 };
