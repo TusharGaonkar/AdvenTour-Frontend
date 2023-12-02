@@ -2,6 +2,11 @@ import { z } from 'zod';
 
 const signUpFormSchema = z
   .object({
+    userName: z
+      .string()
+      .trim()
+      .min(1, 'Username is required')
+      .max(50, 'Username should be lesser than 50 characters'),
     email: z.string().trim().email().min(1, 'Email is required'),
     password: z
       .string()
@@ -17,7 +22,7 @@ const signUpFormSchema = z
     path: ['confirmPassword'],
   });
 
-type SignUpFormSchemaType = z.infer<typeof SignUpFormSchema>;
+type SignUpFormSchemaType = z.infer<typeof signUpFormSchema>;
 
 export { signUpFormSchema, type SignUpFormSchemaType };
 export default signUpFormSchema;
