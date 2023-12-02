@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/order
-import NavBar from '../features/AdventourLandingPage/Navbar';
+import NavBar from '../common/Navbar';
 import { Divider, Progress } from '@nextui-org/react';
 import 'react-photo-view/dist/react-photo-view.css';
 import TourTitle from '../features/TourDetails/TourTitle';
