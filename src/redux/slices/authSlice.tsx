@@ -3,6 +3,7 @@ import apiSlice from './apiSlice';
 export interface LoginResponse {
   status: string;
   data: Data;
+  message?: string;
 }
 
 interface Data {
@@ -18,6 +19,8 @@ export interface User {
   role: string;
   __v: number;
 }
+
+export interface RegisterResponse extends LoginResponse {}
 
 type UserCredentialsType = {
   email: string;
@@ -35,7 +38,7 @@ const authSlice = apiSlice.injectEndpoints({
       }),
     }),
     registerUser: build.mutation<
-      LoginResponse,
+      RegisterResponse,
       Required<Pick<UserCredentialsType, 'email' | 'password' | 'confirmPassword'>>
     >({
       query: (userCredentials) => ({
