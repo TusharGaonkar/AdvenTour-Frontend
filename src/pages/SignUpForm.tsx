@@ -3,14 +3,17 @@
 /* eslint-disable no-trailing-spaces */
 // eslint-disable-next-line import/no-absolute-path
 import signUpFormSchema, { type SignUpFormSchemaType } from '../validators/SignUpFormValidator';
-import { useState } from 'react';
 import { Input, Button, Progress } from '@nextui-org/react';
 import coolGirl from '/3d-casual-life-happy-woman-makes-heart-shape-by-her-hand.png';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRegisterUserMutation } from '../redux/slices/authSlice';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const SignupForm = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -19,14 +22,36 @@ const SignupForm = () => {
     resolver: zodResolver(signUpFormSchema),
   });
 
-  const onSubmit: SubmitHandler<SignUpFormSchemaType> = (data) => {
-    setIsSubmitting(true);
-    console.log(data);
+  const [registerUser, { isLoading, isError, isSuccess, data: response, error }] =
+    useRegisterUserMutation();
+
+  const onSubmit: SubmitHandler<SignUpFormSchemaType> = (formData: SignUpFormSchemaType) => {
+    registerUser(formData);
   };
+
+  useEffect(() => {
+    if (isError) {
+      const errMessage =
+        error?.data?.message ||
+        'Something went wrong while registering the user please try again...';
+
+      toast.error(errMessage, {
+        className: 'text-sm',
+        duration: 1000,
+      });
+    } else if (isSuccess) {
+      toast.success('Registration successful please login to continue...', {
+        className: 'text-sm',
+        duration: 5000,
+      });
+      navigate(-1);
+    }
+  }, [isError, isSuccess, response, error, navigate]);
+
   return (
     <div className="flex flex-row justify-center bg-white rounded-lg bg-red p-7 md:flex-row">
       <Progress
-        isIndeterminate={isSubmitting}
+        isIndeterminate={isLoading}
         size="sm"
         color="danger"
         className="fixed top-0 w-screen"
@@ -39,6 +64,16 @@ const SignupForm = () => {
           <p className="text-xl">Sign Up to book your next adventure!</p>
 
           <div className="flex flex-col w-full gap-6">
+            <Input
+              isClearable
+              type="text"
+              label="Full Name"
+              variant="bordered"
+              placeholder="Enter your full name"
+              {...register('userName')}
+              isInvalid={!!errors.userName}
+              errorMessage={errors.userName?.message}
+            />
             <Input
               isClearable
               type="email"
@@ -71,11 +106,11 @@ const SignupForm = () => {
 
           <div className="flex flex-col w-full">
             <Button
-              isLoading={isSubmitting}
+              isLoading={isLoading}
               className="text-[0.937rem] p-7 bg-teal-300 "
               onClick={handleSubmit(onSubmit)}
             >
-              {isSubmitting ? 'Registering...' : 'Register'}
+              {isLoading ? 'Registering...' : 'Register'}
             </Button>
           </div>
           <div className="w-full">
