@@ -1,9 +1,8 @@
 import { Accordion, AccordionItem, Chip } from '@nextui-org/react';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { RiCheckboxCircleLine } from 'react-icons/ri';
-import { tour } from '../../pages/test';
 
-const TourDetailedInfo = () => (
+const TourDetailedInfo = ({ tour }: { tour: Record<string, unknown> }) => (
   <Accordion variant="splitted" selectionMode="multiple">
     <AccordionItem
       key="1"
@@ -12,8 +11,9 @@ const TourDetailedInfo = () => (
       className="font-semibold "
     >
       <div className="flex flex-col gap-3">
-        {tour.whatsIncluded.map((item) => (
+        {(tour.whatsIncluded as string[]).map((item: string) => (
           <Chip
+            key={item}
             color="success"
             variant="flat"
             startContent={<RiCheckboxCircleLine className="text-2xl" />}
@@ -30,8 +30,9 @@ const TourDetailedInfo = () => (
       className="font-semibold"
     >
       <div className="flex flex-col gap-2">
-        {tour.whatsNotIncluded.map((item: any) => (
+        {(tour.whatsNotIncluded as string[]).map((item: string) => (
           <Chip
+            key="item"
             color="danger"
             variant="flat"
             startContent={<IoIosCloseCircleOutline className="text-2xl" />}
@@ -47,12 +48,12 @@ const TourDetailedInfo = () => (
       title="Additional information"
       className="font-semibold"
     >
-      <p className="font-normal">{tour.additionalInformation}</p>
+      <p className="font-normal">{tour.additionalInformation as string}</p>
     </AccordionItem>
     <AccordionItem key="5" aria-label="Accordion 3" title="FAQ" className="font-semibold">
       <div className="flex flex-col gap-4">
-        {tour.FAQ.map(({ question, answer }, index) => (
-          <div className="flex flex-col gap-1">
+        {(tour.FAQ as { question: string; answer: string }[]).map(({ question, answer }, index) => (
+          <div className="flex flex-col gap-1" key={question}>
             <p className="font-semibold">{`${index + 1}. ${question}`}</p>
             <p className="font-normal">{answer}</p>
           </div>
@@ -65,7 +66,7 @@ const TourDetailedInfo = () => (
       title="Cancellation policy"
       className="font-semibold"
     >
-      <p className="font-normal">{tour.cancellationPolicy}</p>
+      <p className="font-normal">{tour.cancellationPolicy as string}</p>
     </AccordionItem>
   </Accordion>
 );
