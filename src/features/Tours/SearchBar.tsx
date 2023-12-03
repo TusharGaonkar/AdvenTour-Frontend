@@ -28,6 +28,7 @@ const SearchBar = () => {
   const [inputValue, setInputValue] = useState(() => searchToursString || ''); // on mount set search string as input value!
   const { data: response, status } = useGetSuggestionsQuery(inputValue);
   const [suggestions, setSuggestions] = useState([]);
+  const [isSelected, setIsSelected] = useState(false);
   const searchDivRef = useRef<null | HTMLDivElement>(null);
   const suggestionRef = useRef<null | HTMLDivElement>(null);
 
@@ -38,32 +39,30 @@ const SearchBar = () => {
     [dispatch]
   );
 
-  const handleClick = (event: MouseEvent) => {
-    if (
-      searchDivRef.current &&
-      event.target instanceof Node &&
-      !searchDivRef.current.contains(event.target)
-    ) {
-      if (suggestionRef.current) {
-        suggestionRef.current.style.display = 'none';
-      }
+  const handleClickOutside = (event: MouseEvent) => {
+    if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
+      suggestionRef.current.style.display = 'none';
     }
   };
 
   // debouncing implemented in search to prevent request throttling!!
   useEffect(() => {
-    if (suggestionRef.current) {
+    if (!isSelected && suggestionRef.current) {
       suggestionRef.current.style.display = 'block';
+      const delay = 300;
+      const timer = setTimeout(() => {
+        handleSearch(inputValue);
+      }, delay);
+
+      return () => {
+        // caution will run on stale input values ,  remember to cleanup any previous timers
+        clearTimeout(timer);
+      };
     }
-    const delay = 300;
-    const timer = setTimeout(() => {
-      handleSearch(inputValue);
-    }, delay);
-    return () => {
-      // caution will run on stale input values ,  remember to cleanup any previous timers
-      clearTimeout(timer);
-    };
-  }, [inputValue, handleSearch]);
+    if (suggestionRef.current) {
+      suggestionRef.current.style.display = 'none';
+    }
+  }, [inputValue, handleSearch, isSelected]);
 
   useEffect(() => {
     if (status === 'fulfilled') {
@@ -72,9 +71,12 @@ const SearchBar = () => {
   }, [response, status]);
 
   useEffect(() => {
-    document.addEventListener('click', handleClick);
+    document.addEventListener('mousedown', handleClickOutside);
+    if (suggestionRef.current) {
+      suggestionRef.current.style.display = 'none';
+    }
     return () => {
-      document.removeEventListener('click', handleClick);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -85,47 +87,50 @@ const SearchBar = () => {
         size="sm"
         placeholder="Search places to go"
         value={inputValue}
-        onChange={(event) => setInputValue(event.target.value)}
+        onChange={(event) => {
+          setInputValue(event.target.value);
+          setIsSelected(false);
+        }}
         startContent={<FaSearch className="mr-2" />}
       />
 
-      {suggestions.length > 0 ? (
-        <div
-          className="absolute w-full mt-1 shadow-xl bg-secondary rounded-b-xl"
-          ref={suggestionRef}
-        >
-          <Progress
-            isIndeterminate={status === 'pending'}
-            aria-label="progress"
-            size="sm"
-            className={status === 'pending' ? 'w-full overflow-hidden' : 'hidden'}
-          />
-          <p className="p-3 text-xs italic text-gray-600 font-semilight ">
+      <div
+        className="absolute hidden w-full mt-1 shadow-xl bg-secondary rounded-b-xl"
+        ref={suggestionRef}
+      >
+        <Progress
+          isIndeterminate={status === 'pending'}
+          aria-label="progress"
+          size="sm"
+          className={status === 'pending' ? 'w-full overflow-hidden' : 'hidden'}
+        />
+
+        {suggestions.length > 0 && inputValue.length > 0 && (
+          <p className="p-3 text-xs italic text-gray-600 truncate font-semilight ">
             {`Search results matched in the tours for "${inputValue}"`}
           </p>
-          <ul className="w-full h-full cursor-pointer">
-            {flattenSuggestions(suggestions).map(({ value }) => (
-              <li
-                className="px-3 py-4 truncate border-slate-300 border-b-1 last:border-none hover:bg-white last:rounded-b-xl "
-                key={value}
-                onClick={() => {
-                  setInputValue(value);
-                  if (suggestionRef.current) {
-                    suggestionRef.current.style.display = 'none';
-                  }
-                }}
-              >
-                <Highlighter
-                  highlightClassName=" font-semibold bg-[#99FF99]/60"
-                  searchWords={[inputValue]}
-                  autoEscape
-                  textToHighlight={value}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+        )}
+
+        <ul className="w-full h-full cursor-pointer">
+          {flattenSuggestions(suggestions).map(({ value }) => (
+            <li
+              className="px-3 py-4 truncate border-slate-300 border-b-1 last:border-none hover:bg-white last:rounded-b-xl "
+              key={value}
+              onClick={() => {
+                setInputValue(value);
+                setIsSelected(true);
+              }}
+            >
+              <Highlighter
+                highlightClassName=" font-semibold bg-[#99FF99]/60"
+                searchWords={[inputValue]}
+                autoEscape
+                textToHighlight={value}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
