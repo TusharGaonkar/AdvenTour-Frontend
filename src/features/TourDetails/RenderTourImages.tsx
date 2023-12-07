@@ -1,12 +1,12 @@
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { Image } from '@nextui-org/react';
 
-const RenderTourImages = ({ tour }: { tour: Record<string, unk> }) => (
+const RenderTourImages = ({ tour }: { tour: Record<string, unknown> }) => (
   <PhotoProvider>
     <div className="grid grid-cols-2 grid-rows-2  h-[440px] cursor-pointer gap-3 justify-center cursor-pointer">
       <div className="w-full h-full row-span-2 overflow-hidden rounded-xl">
-        <PhotoView key={tour?.mainCoverImage} src={tour?.mainCoverImage}>
-          <img src={tour?.mainCoverImage} alt="" className="object-cover w-full h-full" />
+        <PhotoView key={tour?.mainCoverImage} src={tour?.mainCoverImage as string}>
+          <img src={tour?.mainCoverImage as string} alt="" className="object-cover w-full h-full" />
         </PhotoView>
       </div>
 
