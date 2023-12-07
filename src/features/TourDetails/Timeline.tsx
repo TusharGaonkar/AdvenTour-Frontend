@@ -25,8 +25,8 @@ const Timeline = ({
               className="flex flex-row ml-4"
               onMouseEnter={() =>
                 setViewState({
-                  longitude: activity.location.coordinates.at(1),
-                  latitude: activity.location.coordinates.at(0),
+                  longitude: activity.location.coordinates.at(0),
+                  latitude: activity.location.coordinates.at(1),
                   zoom: 14,
                 })
               }
