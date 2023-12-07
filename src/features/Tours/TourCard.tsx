@@ -1,21 +1,100 @@
-import { Button, Divider } from '@nextui-org/react';
-import { FaRegHeart } from 'react-icons/fa';
+import { Button, Chip, Divider } from '@nextui-org/react';
+import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import StarRatings from 'react-star-ratings';
+import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
+import getDistance from 'geolib/es/getDistance';
 import formatToINR from '../../utils/currencyFormatter';
+import {
+  useCreateBookmarkMutation,
+  useDeleteBookmarkMutation,
+} from '../../redux/slices/bookmarkTourSlice';
+import { useSelector } from 'react-redux';
 
-const TourCard = ({ tour }: { tour: any }) => {
+const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
   const navigate = useNavigate();
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(
+    () => (tour?.isBookmarked as boolean) || false
+  );
+  const [createBookmark] = useCreateBookmarkMutation();
+  const [deleteBookmark] = useDeleteBookmarkMutation();
+  const [distanceFromUser, setDistanceFromUser] = useState<null | number>(null);
+
+  const handleCreateBookmark = async () => {
+    try {
+      const response = await createBookmark(tour._id as string);
+      if (response?.error) throw new Error('Something went wrong while creating bookmark');
+      setIsBookmarked(true);
+      toast.success('Bookmarked successfully..', {
+        className: 'text-xs font-semibold',
+      });
+    } catch (error) {
+      toast.error((error as Error).message, {
+        className: 'text-xs font-semibold',
+      });
+    }
+  };
+
+  const handleDeleteBookmark = async () => {
+    try {
+      const response = await deleteBookmark({
+        tourId: tour._id as string,
+        invalidate: ['Bookmarks'],
+      });
+
+      if (response?.error) throw new Error('Something went wrong while deleting bookmark');
+      setIsBookmarked(false);
+      toast.success('Removed tour from bookmark..', {
+        className: 'text-xs font-semibold',
+      });
+    } catch (error) {
+      toast.error((error as Error).message, {
+        className: 'text-xs font-semibold',
+      });
+    }
+  };
+
+  const { getNearbyTours } = useSelector((state) => state.filterToursQueryString);
+
+  useEffect(() => {
+    if (tour && getNearbyTours && getNearbyTours[0] && getNearbyTours[1]) {
+      const distance = getDistance(
+        { latitude: getNearbyTours[1], longitude: getNearbyTours[0] },
+        {
+          latitude: tour?.tourLocation?.coordinates[1],
+          longitude: tour?.tourLocation?.coordinates[0],
+        }
+      );
+
+      setDistanceFromUser(distance);
+    }
+  }, [tour, getNearbyTours]);
+
+  const handleClickOnBookmark = () => {
+    if (isBookmarked) {
+      handleDeleteBookmark();
+    } else {
+      handleCreateBookmark();
+    }
+  };
+
   return (
-    <div className="rounded-tl-xl rounded-bl-xl grid grid-cols-6 grid-rows-3 w-full h-[220px] bg-secondary items-start space-x-2 space-y-2">
+    <div className="rounded-tl-xl rounded-bl-xl grid grid-cols-6 grid-rows-3 w-full h-[225px] bg-secondary items-start space-x-2 space-y-3">
       <img
         className="object-cover w-full h-full col-span-2 row-span-full rounded-tl-xl rounded-bl-xl"
         src={tour.mainCoverImage}
+        alt=""
       />
 
-      <div className="flex flex-col col-span-3 row-span-2 gap-2 p-2">
+      <div className="flex flex-col col-span-3 row-span-2 gap-1 p-2">
         <p className="text-xl font-semibold">{tour.title}</p>
         <p className="text-sm text-slate-600">Karwar, Karnataka, India</p>
+        {distanceFromUser && (
+          <Chip size="sm" variant="flat">{`~ Approx ${(distanceFromUser / 1000)
+            .toFixed(2)
+            .toLocaleString()} kms from your location`}</Chip>
+        )}
         <StarRatings
           rating={4}
           starRatedColor="green"
@@ -29,11 +108,13 @@ const TourCard = ({ tour }: { tour: any }) => {
           </div>
           <p className="text-xs font-semibold">Excellent</p>
         </div>
-        <Divider />
       </div>
-      <div className="flex flex-row col-span-3 col-start-3 row-start-3 gap-1">
-        <Button className="flex items-center bg-transparent rounded-md border-1.5 ">
-          <FaRegHeart />
+      <div className="flex flex-row items-center col-span-3 col-start-3 row-start-3 gap-2">
+        <Button
+          className="flex items-center bg-transparent rounded-md border-1.5 "
+          onClick={handleClickOnBookmark}
+        >
+          {isBookmarked ? <FaHeart className="text-xl text-primary" /> : <FaRegHeart />}
         </Button>
         <Button
           color="primary"
