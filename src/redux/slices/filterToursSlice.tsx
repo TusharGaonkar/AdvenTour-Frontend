@@ -22,6 +22,9 @@ const initialState = {
   },
   tourRating: null,
   searchToursString: '',
+  getNearbyTours: null,
+  tourGroupSize: 1,
+  tourStartDate: '',
 };
 
 const filterToursSlice = createSlice({
@@ -50,6 +53,24 @@ const filterToursSlice = createSlice({
     setSearchToursString(state, action) {
       if (typeof action.payload === 'string') state.searchToursString = action.payload;
     },
+
+    setGetNearbyTours(state, action) {
+      if (Array.isArray(action.payload) && action.payload.length === 2) {
+        state.getNearbyTours = [...action.payload];
+      }
+    },
+
+    setTourGroupSize(state, action) {
+      if (typeof action.payload === 'number') state.tourGroupSize = action.payload;
+    },
+
+    setTourStartDate(state, action) {
+      if (typeof action.payload === 'string') state.tourStartDate = action.payload;
+    },
+
+    resetToursQueryString() {
+      return initialState;
+    },
   },
 });
 
@@ -60,6 +81,10 @@ export const {
   setAgeGroup,
   setTourRating,
   setSearchToursString,
+  setGetNearbyTours,
+  setTourGroupSize,
+  setTourStartDate,
+  resetToursQueryString,
 } = filterToursSlice.actions;
 
 export default filterToursSlice;
