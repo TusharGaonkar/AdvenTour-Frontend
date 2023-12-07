@@ -14,8 +14,9 @@ const ToursPage = () => {
   const [tours, setTours] = useState<null | []>(null);
   const [queryString, setQueryString] = useState('');
   const filters = useSelector((state) => state.filterToursQueryString);
-  const { data: tourData, status, isError } = useGetAllToursQuery(queryString);
+  const { data: tourData, status, isError, error } = useGetAllToursQuery(queryString);
 
+  useEffect(() => console.log(queryString));
   useEffect(() => {
     setQueryString(customApiQueryBuilder(filters));
   }, [filters]);
@@ -40,12 +41,12 @@ const ToursPage = () => {
         <FindTours />
         <div className="flex flex-row gap-12">
           <Filters />
-          <div className="flex flex-col w-full h-full gap-6">
+          <div className="flex flex-col w-full h-full gap-6 mt-4">
             {status === 'pending' && (
               <Spinner color="danger" size="lg" className="mt-48" aria-label="loading" />
             )}
             {status === 'fulfilled' &&
-              tours?.map((tour) => <TourCard key={tour.title} tour={tour} />)}
+              tours?.map((tour) => <TourCard key={tour._id} tour={tour} />)}
             {status === 'fulfilled' && tours?.length === 0 && (
               <div className="flex flex-col items-center justify-center w-full h-full gap-5 mx-auto ">
                 <img src={noResults} className="object-cover h-[300px] w-full" alt="" />
