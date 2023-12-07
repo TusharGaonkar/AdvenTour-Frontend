@@ -2,17 +2,19 @@ import { NextUIProvider } from '@nextui-org/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
+import { useLocation } from 'react-router-dom';
 import store from './store';
 import LoginForm from '../pages/loginForm';
 import SignupForm from '../pages/SignUpForm';
 import AdventourLandingPage from '../pages/AdventourLandingPage';
 import ToursPage from '../pages/ToursPage';
 import TourDetailsPage from '../pages/TourDetailsPage';
+import BookmarksPage from '../pages/BookmarksPage';
+import ContributePage from '../pages/ContributePage';
 import { reAuthenticate } from '../redux/slices/userSlice';
 import '../index.css';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 
 function App() {
   const dispatch = useDispatch();
@@ -29,6 +31,8 @@ function App() {
         <Route path="/register" element={<SignupForm />} />
         <Route path="/tours" element={<ToursPage />} />
         <Route path="/tours/:id" element={<TourDetailsPage />} />
+        <Route path="/bookmarks" element={<BookmarksPage />} />
+        <Route path="/contribute" element={<ContributePage />} />
       </Routes>
       <Toaster position="top-right" reverseOrder={false} />
     </NextUIProvider>
