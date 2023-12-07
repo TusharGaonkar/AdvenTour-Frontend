@@ -7,6 +7,8 @@ const getToursSlice = apiSlice.injectEndpoints({
         url: `/tours?${queryString}`,
         method: 'GET',
       }),
+
+      providesTags: ['Tours'],
     }),
   }),
 });
