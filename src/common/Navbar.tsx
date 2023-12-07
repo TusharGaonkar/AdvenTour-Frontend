@@ -2,6 +2,8 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button } from '@nextui-
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
 import { logoutUser } from '../redux/slices/userSlice';
+import logo from '/advenTourLogo.png';
+
 import {
   Dropdown,
   DropdownTrigger,
@@ -70,7 +72,12 @@ const NavBar = () => {
     <Navbar className="text-xs">
       <NavbarBrand>
         <p className="font-bold text-inherit">
-          <NavLink to="/">AdvenTour</NavLink>
+          <NavLink to="/">
+            <div className="flex items-end justify-end gap-0.5">
+              <img className="object-cover h-9" src={logo} alt="logo" />
+              <span className="text-sm font-bold text-slate-700">AdvenTour</span>
+            </div>
+          </NavLink>
         </p>
       </NavbarBrand>
       <NavbarContent className="hidden gap-4 sm:flex" justify="center">
@@ -92,10 +99,10 @@ const NavBar = () => {
               </NavbarItem>
             )}
             <NavbarItem key="contribute">
-              <NavLink to="#">Contribute</NavLink>
+              <NavLink to="/contribute">Contribute</NavLink>
             </NavbarItem>
             <NavbarItem key="Bookmarked Tours">
-              <NavLink to="#">Bookmarks</NavLink>
+              <NavLink to="/bookmarks">Bookmarks</NavLink>
             </NavbarItem>
             <NavbarItem key="bookings">
               <NavLink to="#">My bookings</NavLink>
