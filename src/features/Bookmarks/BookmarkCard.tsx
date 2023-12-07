@@ -4,8 +4,8 @@ import { CiBookmarkCheck } from 'react-icons/ci';
 import { MdDelete, MdTroubleshoot } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useDeleteBookmarkMutation } from '../../redux/slices/bookmarkTourSlice';
 import swal from 'sweetalert';
+import { useDeleteBookmarkMutation } from '../../redux/slices/bookmarkTourSlice';
 
 const BookmarksCard = ({ bookmark }: { bookmark: Record<string, unknown> }) => {
   const { createdAt } = bookmark;
