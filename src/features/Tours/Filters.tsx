@@ -1,4 +1,4 @@
-import { Slider, Checkbox, Radio, RadioGroup } from '@nextui-org/react';
+import { Slider, Checkbox, Radio, RadioGroup, Button } from '@nextui-org/react';
 import StarRatings from 'react-star-ratings';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -7,8 +7,8 @@ import {
   setTourDuration,
   setAgeGroup,
   setTourRating,
+  resetToursQueryString,
 } from '../../redux/slices/filterToursSlice';
-import { useEffect } from 'react';
 
 const Filters = () => {
   const dispatch = useDispatch();
@@ -16,7 +16,17 @@ const Filters = () => {
 
   return (
     <div className="flex flex-col items-start gap-8 p-4 rounded-xl">
-      <p className="text-lg font-bold">Filters</p>
+      <div className="flex items-center gap-2">
+        <p className="text-lg font-bold">Filters</p>
+        <Button
+          variant="flat"
+          color="warning"
+          size="sm"
+          onClick={() => dispatch(resetToursQueryString())}
+        >
+          Clear all filters
+        </Button>
+      </div>
 
       <div className="flex flex-col w-full gap-1">
         <p className="font-semibold ">Trip difficulty</p>
