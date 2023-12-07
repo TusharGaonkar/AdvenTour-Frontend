@@ -26,6 +26,7 @@ const TourDetailsPage = () => {
         isIndeterminate={status === 'pending'}
         aria-label="Loading..."
         className="w-screen"
+        color="danger"
       />
       <div className="flex flex-col max-w-6xl mx-auto gap-7">
         <NavBar />
