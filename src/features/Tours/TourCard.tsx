@@ -5,12 +5,12 @@ import StarRatings from 'react-star-ratings';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
 import getDistance from 'geolib/es/getDistance';
+import { useSelector } from 'react-redux';
 import formatToINR from '../../utils/currencyFormatter';
 import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
 } from '../../redux/slices/bookmarkTourSlice';
-import { useSelector } from 'react-redux';
 
 const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
   const navigate = useNavigate();
@@ -23,9 +23,9 @@ const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
 
   const handleCreateBookmark = async () => {
     try {
+      setIsBookmarked(true);
       const response = await createBookmark(tour._id as string);
       if (response?.error) throw new Error('Something went wrong while creating bookmark');
-      setIsBookmarked(true);
       toast.success('Bookmarked successfully..', {
         className: 'text-xs font-semibold',
       });
@@ -33,22 +33,24 @@ const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
       toast.error((error as Error).message, {
         className: 'text-xs font-semibold',
       });
+      setIsBookmarked(false);
     }
   };
 
   const handleDeleteBookmark = async () => {
     try {
+      setIsBookmarked(false);
       const response = await deleteBookmark({
         tourId: tour._id as string,
         invalidate: ['Bookmarks'],
       });
 
       if (response?.error) throw new Error('Something went wrong while deleting bookmark');
-      setIsBookmarked(false);
       toast.success('Removed tour from bookmark..', {
         className: 'text-xs font-semibold',
       });
     } catch (error) {
+      setIsBookmarked(true);
       toast.error((error as Error).message, {
         className: 'text-xs font-semibold',
       });
