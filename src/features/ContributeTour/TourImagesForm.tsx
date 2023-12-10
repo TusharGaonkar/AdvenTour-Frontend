@@ -3,8 +3,8 @@ import { Input, Textarea } from '@nextui-org/react';
 import { useCallback, useState } from 'react';
 import { DropzoneOptions, useDropzone } from 'react-dropzone';
 
-const DropZone = ({ handleChange }: { handleChange: DropzoneOptions['onDrop'] }) => {
-  const { getRootProps, getInputProps } = useDropzone({ onDrop: handleChange });
+const DropZone = ({ configuration }: { configuration: DropzoneOptions }) => {
+  const { getRootProps, getInputProps } = useDropzone(configuration);
 
   return (
     <div className="flex items-center justify-center w-full" {...getRootProps()}>
@@ -51,12 +51,14 @@ const TourImagesForm = () => {
     }
   }, []);
 
-  const handleAdditonalImages: DropzoneOptions['onDrop'] = useCallback((acceptedFiles: File[]) => {
+  const handleAdditionalImages: DropzoneOptions['onDrop'] = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
-      // eslint-disable-next-line no-restricted-syntax
+      const previews = [];
       for (const file of acceptedFiles) {
-        setAdditionalImages((prev) => [...prev, URL.createObjectURL(file)]);
+        previews.push(URL.createObjectURL(file));
       }
+
+      setAdditionalImages(previews);
     }
   }, []);
 
@@ -76,27 +78,51 @@ const TourImagesForm = () => {
         placeholder="Enter tour description"
       />
       <h1 className="font-semibold text-md">Select Main Cover Image</h1>
-      <DropZone handleChange={handleMainCoverImage} />
+      <DropZone
+        configuration={{
+          onDrop: handleMainCoverImage,
+          maxFiles: 1,
+          accept: { 'image/png': ['.png', '.jpg', '.jpeg', '.svg', '.webp'] },
+        }}
+      />
       {mainCoverImage && (
         <div className="flex flex-col gap-2">
-          <img src={mainCoverImage} alt="main cover" width={70} className="rounded-xl" />
-          <p className="text-xs text-slate-400">Selected Image</p>
+          <img
+            src={mainCoverImage}
+            alt="main cover"
+            width={70}
+            className="object-cover h-20 rounded-xl"
+          />
+          <p className="text-xs text-slate-400">(Selected Image)</p>
         </div>
       )}
 
       <h1 className="font-semibold text-md">Add three more additional images of the tour</h1>
       <div className="flex flex-col gap-2">
         {additionalImages.length > 0 && (
-          <div className="flex items-center gap-2">
-            <p className="text-xs text-slate-400">Selected Images:</p>
+          <div className="flex flex-col gap-2">
             <div className="flex flex-row gap-2">
               {additionalImages.map((image) => (
-                <img src={image} alt="main cover" width={50} className="rounded-xl" />
+                <img
+                  key={image}
+                  src={image}
+                  alt="main cover"
+                  width={70}
+                  className="object-cover h-20 rounded-xl"
+                />
               ))}
+
+              <p className="self-end text-xs text-slate-400">(Selected images)</p>
             </div>
           </div>
         )}
-        <DropZone handleChange={handleAdditonalImages} />
+        <DropZone
+          configuration={{
+            onDrop: handleAdditionalImages,
+            maxFiles: 3,
+            accept: { 'image/png': ['.png', '.jpg', '.jpeg', '.svg', '.webp'] },
+          }}
+        />
       </div>
     </div>
   );
