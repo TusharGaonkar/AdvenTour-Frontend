@@ -39,6 +39,13 @@ const useCustomMultiForm = (items: Props[]) => {
     }
   };
 
+  const jumpToIndex = (index: number) => {
+    if (index >= 0 && index < items.length) {
+      setActiveIndex(index);
+      setActiveItem(items[index]);
+    }
+  };
+
   return {
     activeIndex,
     activeItem,
@@ -46,6 +53,7 @@ const useCustomMultiForm = (items: Props[]) => {
     isEnd,
     handleNext,
     handlePrev,
+    jumpToIndex,
   };
 };
 
