@@ -1,8 +1,10 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Input, Textarea } from '@nextui-org/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { DropzoneOptions, useDropzone } from 'react-dropzone';
+import { UseFormRegister, FieldErrors, UseFormGetValues } from 'react-hook-form';
+import { type ContributeTourFormSchemaType } from '../../validators/ContributeTourFormValidator';
 
 const DropZone = ({ configuration }: { configuration: DropzoneOptions }) => {
   const { getRootProps, getInputProps } = useDropzone(configuration);
@@ -30,7 +32,8 @@ const DropZone = ({ configuration }: { configuration: DropzoneOptions }) => {
             />
           </svg>
           <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-            <span className="font-semibold">Click to upload</span> or drag and drop
+            <span className="font-semibold">Click to upload</span>
+            or drag and drop
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400">
             SVG, PNG, JPG or GIF (MAX. 800x400px)
@@ -42,7 +45,15 @@ const DropZone = ({ configuration }: { configuration: DropzoneOptions }) => {
   );
 };
 
-const TourBasicInfoForm = () => {
+const TourBasicInfoForm = ({
+  register,
+  errors,
+  getValues,
+}: {
+  register: UseFormRegister<ContributeTourFormSchemaType>;
+  errors: FieldErrors<ContributeTourFormSchemaType>;
+  getValues: UseFormGetValues<ContributeTourFormSchemaType>;
+}) => {
   const [mainCoverImage, setMainCoverImage] = useState<undefined | string>(undefined);
   const [additionalImages, setAdditionalImages] = useState<string[]>([]);
 
@@ -72,11 +83,19 @@ const TourBasicInfoForm = () => {
         labelPlacement="outside"
         label="Tour Title"
         placeholder="Enter tour title"
+        {...register('title')}
+        isInvalid={!!errors.title}
+        errorMessage={errors.title?.message}
+        defaultValue={getValues('title') || ''}
       />
       <Textarea
         label="Tour Description"
         labelPlacement="outside"
         placeholder="Enter tour description"
+        {...register('description')}
+        isInvalid={!!errors.description}
+        errorMessage={errors.description?.message}
+        defaultValue={getValues('description') || ''}
       />
       <h1 className="font-semibold text-md">Select Main Cover Image</h1>
       <DropZone
