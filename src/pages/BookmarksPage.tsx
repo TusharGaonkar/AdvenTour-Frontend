@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Spinner, Divider, Progress } from '@nextui-org/react';
 import BookmarksCard from '../features/Bookmarks/BookmarkCard';
 import { useGetAllBookmarksQuery } from '../redux/slices/bookmarkTourSlice';
