@@ -1,8 +1,14 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { UseFormRegister, FieldErrors, UseFormGetValues } from 'react-hook-form';
+import { ContributeTourFormSchemaType } from '../validators/ContributeTourFormValidator';
 
 type Props = {
   label: string;
-  content: React.ReactNode;
+  content: React.FunctionComponent<{
+    register: UseFormRegister<ContributeTourFormSchemaType>;
+    errors: FieldErrors<ContributeTourFormSchemaType>;
+    getValues: UseFormGetValues<ContributeTourFormSchemaType>;
+  }>;
 };
 
 const useCustomMultiForm = (items: Props[]) => {
