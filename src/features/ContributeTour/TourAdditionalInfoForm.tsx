@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Textarea, Input, Button } from '@nextui-org/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { FieldErrors, UseFormGetValues, UseFormRegister } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { ContributeTourFormSchemaType } from '../../validators/ContributeTourFormValidator';
