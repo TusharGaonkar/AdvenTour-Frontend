@@ -13,22 +13,38 @@ import {
   Radio,
 } from '@nextui-org/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import languages from '../../utils/languagesList';
 import { format } from 'date-fns';
 import 'react-day-picker/dist/style.css';
 import { DayPicker, SelectMultipleEventHandler } from 'react-day-picker';
-import { FieldErrors, UseFormGetValues, UseFormRegister } from 'react-hook-form';
+import {
+  Controller,
+  FieldErrors,
+  FieldValues,
+  UseFormGetValues,
+  UseFormRegister,
+  UseFormSetValue,
+  useFormContext,
+} from 'react-hook-form';
 import { ContributeTourFormSchemaType } from '../../validators/ContributeTourFormValidator';
+import languages from '../../utils/languagesList';
 
-const SelectLanguagesDropDown = () => {
-  const [selectedKeys, setSelectedKeys] = useState(new Set(['English']));
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+const SelectLanguagesDropDown = ({
+  selectedLanguages,
+  setSelectedLanguages,
+  setValue,
+}: {
+  selectedLanguages: string[];
+  setSelectedLanguages: React.Dispatch<React.SetStateAction<string[]>>;
+  setValue: UseFormSetValue<FieldValues>;
+}) => {
+  const [selectedKeys, setSelectedKeys] = useState(new Set<string>(selectedLanguages));
 
   const selectedValue = useMemo(() => Array.from(selectedKeys), [selectedKeys]);
 
   useEffect(() => {
     setSelectedLanguages(selectedValue);
-  }, [selectedValue, selectedLanguages]);
+    setValue('liveGuideLanguages', [...selectedValue]);
+  }, [selectedValue, selectedLanguages, setSelectedLanguages, setValue]);
 
   return (
     <div className="flex flex-col items-start w-full gap-3">
@@ -73,7 +89,15 @@ const TourPriceLocationForm = ({
   errors: FieldErrors<ContributeTourFormSchemaType>;
   getValues: UseFormGetValues<ContributeTourFormSchemaType>;
 }) => {
-  const [days, setDays] = useState<Date[]>([]);
+  const { setValue, control } = useFormContext();
+
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>(
+    getValues('liveGuideLanguages') ? [...getValues('liveGuideLanguages')] : ['English']
+  );
+
+  const [days, setDays] = useState<Date[]>(
+    getValues('tourStartDates') ? getValues('tourStartDates').map((date) => new Date(date)) : []
+  );
 
   const getMinDate = useCallback(() => {
     const maxDaysToVerify = 1;
@@ -87,7 +111,11 @@ const TourPriceLocationForm = ({
     const allDays = [...selectedDays];
     allDays.sort((day1, day2) => day1.getTime() - day2.getTime());
 
-    const minDayDifference = 3;
+    const tourDuration = getValues('tourDurationInDays');
+
+    if (tourDuration === 0) return;
+
+    const minDayDifference = tourDuration;
     const minDiffInMilliSeconds = minDayDifference * 24 * 60 * 60 * 1000; // in milliseconds since 1970!!
 
     const filteredDays = allDays.reduce((acc: Date[], day: Date) => {
@@ -102,6 +130,12 @@ const TourPriceLocationForm = ({
     }, []); //  filter out days based on the tour day length in the interval
 
     setDays(filteredDays);
+
+    // Set the tourStartDates array in the hook form as well in the format 'YYYY-MM-DD'
+    setValue(
+      'tourStartDates',
+      filteredDays.map((date: Date) => format(date, 'yyyy-MM-dd'))
+    );
   };
 
   return (
@@ -123,13 +157,17 @@ const TourPriceLocationForm = ({
           type="number"
           label="Latitude"
           placeholder="Enter latitude"
+          defaultValue="0"
           labelPlacement="outside"
+          {...register('tourLocation.coordinates.0', { valueAsNumber: true })}
         />
         <Input
           type="number"
           label="Longitude"
           placeholder="Enter longitude"
           labelPlacement="outside"
+          defaultValue="0"
+          {...register('tourLocation.coordinates.1', { valueAsNumber: true })}
         />
       </div>
 
@@ -166,6 +204,7 @@ const TourPriceLocationForm = ({
           className="col-span-1 "
           {...register('tourDurationInDays', {
             valueAsNumber: true,
+            onChange: () => setDays([]),
           })}
           isInvalid={!!errors.tourDurationInDays}
           errorMessage={errors.tourDurationInDays?.message}
@@ -179,6 +218,7 @@ const TourPriceLocationForm = ({
         labelPlacement="outside"
         placeholder="Enter tour start time"
         {...register('tourStartTime')}
+        defaultValue={getValues('tourStartTime') || '07:00'}
         isInvalid={!!errors.tourStartTime}
         errorMessage={errors.tourStartTime?.message}
       />
@@ -223,23 +263,48 @@ const TourPriceLocationForm = ({
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-1">
           <p className="text-sm">Select Tour Difficulty</p>
-          <RadioGroup defaultValue="Easy">
-            <Radio value="Easy">Easy</Radio>
-            <Radio value="Medium">Medium</Radio>
-            <Radio value="Hard">Hard</Radio>
-          </RadioGroup>
+          <Controller
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <RadioGroup
+                defaultValue={value}
+                onValueChange={(selectedValue) => onChange(selectedValue)}
+              >
+                <Radio value="Easy">Easy</Radio>
+                <Radio value="Medium">Medium</Radio>
+                <Radio value="Hard">Hard</Radio>
+              </RadioGroup>
+            )}
+            name="tourDifficulty"
+          />
         </div>
 
-        <Slider
-          label="Age Group Allowed"
-          step={1}
-          minValue={0}
-          maxValue={100}
-          defaultValue={[12, 70]}
+        <Controller
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <Slider
+              label="Age Group Allowed"
+              step={1}
+              minValue={0}
+              maxValue={100}
+              defaultValue={[value.minAge, value.maxAge]}
+              onChange={(updatedRange: number | number[]) => {
+                if (Array.isArray(updatedRange)) {
+                  onChange({ minAge: updatedRange[0], maxAge: updatedRange[1] });
+                }
+              }}
+            />
+          )}
+          name="ageGroups"
         />
+
         <div className="flex flex-col justify-start gap-1">
           <p className="text-sm">Tour Guide Languages</p>
-          <SelectLanguagesDropDown />
+          <SelectLanguagesDropDown
+            selectedLanguages={selectedLanguages}
+            setSelectedLanguages={setSelectedLanguages}
+            setValue={setValue}
+          />
         </div>
       </div>
     </div>
