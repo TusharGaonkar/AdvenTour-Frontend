@@ -1,9 +1,15 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Input, Textarea } from '@nextui-org/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { DropzoneOptions, useDropzone } from 'react-dropzone';
-import { UseFormRegister, FieldErrors, UseFormGetValues } from 'react-hook-form';
+import {
+  UseFormRegister,
+  FieldErrors,
+  UseFormGetValues,
+  useFormContext,
+  useFieldArray,
+} from 'react-hook-form';
 import { type ContributeTourFormSchemaType } from '../../validators/ContributeTourFormValidator';
 
 const DropZone = ({ configuration }: { configuration: DropzoneOptions }) => {
@@ -31,12 +37,11 @@ const DropZone = ({ configuration }: { configuration: DropzoneOptions }) => {
               d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
             />
           </svg>
-          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-            <span className="font-semibold">Click to upload</span>
-            or drag and drop
+          <p className="mb-2 text-sm text-gray-500 font-semibold">
+            Click to upload or drag and drop
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            SVG, PNG, JPG or GIF (MAX. 800x400px)
+            PNG, JPG, JPEG, WebP (Max file size 3MB)
           </p>
         </div>
         <input {...getInputProps()} />
@@ -54,25 +59,53 @@ const TourBasicInfoForm = ({
   errors: FieldErrors<ContributeTourFormSchemaType>;
   getValues: UseFormGetValues<ContributeTourFormSchemaType>;
 }) => {
-  const [mainCoverImage, setMainCoverImage] = useState<undefined | string>(undefined);
-  const [additionalImages, setAdditionalImages] = useState<string[]>([]);
+  const { control } = useFormContext();
 
-  const handleMainCoverImage: DropzoneOptions['onDrop'] = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      setMainCoverImage(URL.createObjectURL(acceptedFiles[0]));
-    }
-  }, []);
+  const { replace: replaceMainCoverImage } = useFieldArray({
+    control,
+    name: 'mainCoverImage',
+  });
 
-  const handleAdditionalImages: DropzoneOptions['onDrop'] = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      const previews = [];
-      for (const file of acceptedFiles) {
-        previews.push(URL.createObjectURL(file));
+  const { replace: replaceAdditionalCoverImages } = useFieldArray({
+    control,
+    name: 'additionalCoverImages',
+  });
+
+  const [mainCoverImage, setMainCoverImage] = useState<undefined | string>(
+    getValues('mainCoverImage')?.[0]
+      ? URL.createObjectURL(getValues('mainCoverImage')[0])
+      : undefined
+  );
+
+  const [additionalImages, setAdditionalImages] = useState<string[]>(
+    getValues('additionalCoverImages')?.map((image: File) => URL.createObjectURL(image)) || []
+  );
+
+  const handleMainCoverImage: DropzoneOptions['onDrop'] = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 0) {
+        const imageURL = URL.createObjectURL(acceptedFiles[0]);
+        setMainCoverImage(imageURL);
+        replaceMainCoverImage(acceptedFiles[0]);
       }
+    },
+    [replaceMainCoverImage]
+  );
 
-      setAdditionalImages(previews);
-    }
-  }, []);
+  const handleAdditionalImages: DropzoneOptions['onDrop'] = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 0) {
+        const imageURLs = acceptedFiles.map((image) => URL.createObjectURL(image));
+        // select only first three images
+        const newAdditionalImages = [...imageURLs, ...additionalImages].slice(0, 3);
+        setAdditionalImages(newAdditionalImages);
+
+        const prevImageFiles = getValues('additionalCoverImages') || [];
+        replaceAdditionalCoverImages([...acceptedFiles, ...prevImageFiles].slice(0, 3));
+      }
+    },
+    [setAdditionalImages, replaceAdditionalCoverImages, additionalImages, getValues]
+  );
 
   return (
     <div className="flex flex-col gap-4 ">
@@ -98,13 +131,6 @@ const TourBasicInfoForm = ({
         defaultValue={getValues('description') || ''}
       />
       <h1 className="font-semibold text-md">Select Main Cover Image</h1>
-      <DropZone
-        configuration={{
-          onDrop: handleMainCoverImage,
-          maxFiles: 1,
-          accept: { 'image/png': ['.png', '.jpg', '.jpeg', '.svg', '.webp'] },
-        }}
-      />
       {mainCoverImage && (
         <div className="flex flex-col gap-2">
           <img
@@ -116,6 +142,16 @@ const TourBasicInfoForm = ({
           <p className="text-xs text-slate-400">(Selected Image)</p>
         </div>
       )}
+      {errors.mainCoverImage && (
+        <p className="text-xs text-red-500">{errors.mainCoverImage.message as string}</p>
+      )}
+      <DropZone
+        configuration={{
+          onDrop: handleMainCoverImage,
+          maxFiles: 1,
+          accept: { 'image/png': ['.png', '.jpg', '.jpeg', '.webp'] },
+        }}
+      />
 
       <h1 className="font-semibold text-md">Add three more additional images of the tour</h1>
       <div className="flex flex-col gap-2">
@@ -136,11 +172,14 @@ const TourBasicInfoForm = ({
             </div>
           </div>
         )}
+        {errors.additionalCoverImages && (
+          <p className="text-xs text-red-500">{errors.additionalCoverImages.message as string}</p>
+        )}
         <DropZone
           configuration={{
             onDrop: handleAdditionalImages,
             maxFiles: 3,
-            accept: { 'image/png': ['.png', '.jpg', '.jpeg', '.svg', '.webp'] },
+            accept: { 'image/png': ['.png', '.jpg', '.jpeg', '.webp'] },
           }}
         />
       </div>
