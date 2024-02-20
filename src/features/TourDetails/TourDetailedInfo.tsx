@@ -42,14 +42,16 @@ const TourDetailedInfo = ({ tour }: { tour: Record<string, unknown> }) => (
         ))}
       </div>
     </AccordionItem>
-    <AccordionItem
-      key="3"
-      aria-label="Accordion 3"
-      title="Additional information"
-      className="font-semibold"
-    >
-      <p className="font-normal">{tour.additionalInformation as string}</p>
-    </AccordionItem>
+    {tour.additionalInformation?.length > 0 && (
+      <AccordionItem
+        key="3"
+        aria-label="Accordion 3"
+        title="Additional information"
+        className="font-semibold"
+      >
+        <p className="font-normal">{tour.additionalInformation as string}</p>
+      </AccordionItem>
+    )}
     <AccordionItem key="5" aria-label="Accordion 3" title="FAQ" className="font-semibold">
       <div className="flex flex-col gap-4">
         {(tour.FAQ as { question: string; answer: string }[]).map(({ question, answer }, index) => (
@@ -60,14 +62,16 @@ const TourDetailedInfo = ({ tour }: { tour: Record<string, unknown> }) => (
         ))}
       </div>
     </AccordionItem>
-    <AccordionItem
-      key="4"
-      aria-label="Accordion 3"
-      title="Cancellation policy"
-      className="font-semibold"
-    >
-      <p className="font-normal">{tour.cancellationPolicy as string}</p>
-    </AccordionItem>
+    {tour?.cancellationPolicy?.length > 0 && (
+      <AccordionItem
+        key="4"
+        aria-label="Accordion 3"
+        title="Cancellation policy"
+        className="font-semibold"
+      >
+        <p className="font-normal">{tour.cancellationPolicy as string}</p>
+      </AccordionItem>
+    )}
   </Accordion>
 );
 
