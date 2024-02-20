@@ -4,7 +4,7 @@ import formatToINR from '../../utils/currencyFormatter';
 
 const TourDescription = ({ tour }: { tour: Record<string, unknown> }) => (
   <div className="flex flex-col items-start gap-3">
-    <h1 className="font-semibold text-md"> About</h1>
+    <h1 className="font-semibold text-medium">About</h1>
     <p>{tour.description as string}</p>
     <p>
       Starting from
@@ -12,7 +12,7 @@ const TourDescription = ({ tour }: { tour: Record<string, unknown> }) => (
         className={
           (tour?.discountInRupees as number) > 0
             ? 'line-through mx-1 text-red-400 font-semibold'
-            : 'mx-1'
+            : 'mx-1 font-semibold text-2xl'
         }
       >
         {formatToINR(tour?.priceInRupees as number)}
