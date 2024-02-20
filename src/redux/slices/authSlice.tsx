@@ -21,6 +21,7 @@ export interface User {
 }
 
 export interface RegisterResponse extends LoginResponse {}
+export interface AdminLoginResponse extends LoginResponse {}
 
 type UserCredentialsType = {
   email: string;
@@ -37,6 +38,14 @@ const authSlice = apiSlice.injectEndpoints({
         body: userCredentials,
       }),
     }),
+
+    loginAdmin: build.mutation<AdminLoginResponse, UserCredentialsType>({
+      query: (userCredentials) => ({
+        url: '/auth/admin/login',
+        method: 'POST',
+        body: userCredentials,
+      }),
+    }),
     registerUser: build.mutation<
       RegisterResponse,
       Required<Pick<UserCredentialsType, 'email' | 'password' | 'confirmPassword'>>
@@ -47,9 +56,21 @@ const authSlice = apiSlice.injectEndpoints({
         body: userCredentials,
       }),
     }),
+
+    logoutUser: build.mutation<void, void>({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
-export const { useLoginUserMutation, useRegisterUserMutation } = authSlice;
+export const {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+  useLoginAdminMutation,
+  useLogoutUserMutation,
+} = authSlice;
 
 export default authSlice;
