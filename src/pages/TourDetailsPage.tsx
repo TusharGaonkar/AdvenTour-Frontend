@@ -1,5 +1,5 @@
+/* eslint-disable no-underscore-dangle */
 // eslint-disable-next-line import/order
-import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Divider, Progress, Spinner } from '@nextui-org/react';
 import { useGetIndividualTourInfoQuery } from '../redux/slices/getIndividualTourInfoSlice';
@@ -28,8 +28,8 @@ const TourDetailsPage = () => {
         className="w-screen"
         color="danger"
       />
+      <NavBar />
       <div className="flex flex-col max-w-6xl mx-auto gap-7">
-        <NavBar />
         {status === 'fulfilled' && tourData.totalResults === 1 ? (
           <>
             <div className="flex items-start justify-between">
@@ -37,7 +37,7 @@ const TourDetailsPage = () => {
               <BookMarkTour />
             </div>
             <RenderTourImages tour={tourData.data.tour} />
-            <div className="grid items-start grid-cols-2">
+            <div className="grid items-start grid-cols-2 gap-2">
               <div className="flex flex-col gap-7">
                 <TourDescription tour={tourData?.data?.tour} />
                 <Divider />
@@ -47,7 +47,11 @@ const TourDetailsPage = () => {
               </div>
 
               <div className="sticky top-20">
-                <BookTour />
+                <BookTour
+                  tour={tourData?.data?.tour}
+                  ageGroups={tourData?.data?.tour?.ageGroups}
+                  maxPeoplePerBooking={tourData?.data?.tour?.maxPeoplePerBooking}
+                />
               </div>
             </div>
             <Divider />
