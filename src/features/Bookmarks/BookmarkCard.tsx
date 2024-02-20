@@ -1,7 +1,7 @@
 import { CardHeader, Card, CardFooter, Image, Button } from '@nextui-org/react';
 import { format, parseISO } from 'date-fns';
 import { CiBookmarkCheck } from 'react-icons/ci';
-import { MdDelete, MdTroubleshoot } from 'react-icons/md';
+import { MdDelete } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import swal from 'sweetalert';
@@ -9,7 +9,7 @@ import { useDeleteBookmarkMutation } from '../../redux/slices/bookmarkTourSlice'
 
 const BookmarksCard = ({ bookmark }: { bookmark: Record<string, unknown> }) => {
   const { createdAt } = bookmark;
-  const { title, mainCoverImage, _id } = bookmark.tour;
+  const { title, mainCoverImage, _id } = bookmark.tour || {};
   const [deleteBookmark] = useDeleteBookmarkMutation();
 
   const navigate = useNavigate();
