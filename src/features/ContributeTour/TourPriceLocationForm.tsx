@@ -146,10 +146,10 @@ const TourPriceLocationForm = ({
         placeholder="Enter tour location"
         labelPlacement="outside"
         className="col-span-1"
-        {...register('address')}
-        isInvalid={!!errors.address}
-        errorMessage={errors.address?.message}
-        defaultValue={getValues('address')}
+        {...register('tourLocation.address')}
+        isInvalid={!!errors?.tourLocation?.address}
+        errorMessage={errors?.tourLocation?.address?.message}
+        defaultValue={getValues('tourLocation.address') || ''}
       />
 
       <div className="grid grid-cols-2 gap-1">
@@ -157,7 +157,7 @@ const TourPriceLocationForm = ({
           type="number"
           label="Latitude"
           placeholder="Enter latitude"
-          defaultValue="0"
+          defaultValue={getValues('tourLocation.coordinates')?.[0] || '0'}
           labelPlacement="outside"
           {...register('tourLocation.coordinates.0', { valueAsNumber: true })}
         />
@@ -166,7 +166,7 @@ const TourPriceLocationForm = ({
           label="Longitude"
           placeholder="Enter longitude"
           labelPlacement="outside"
-          defaultValue="0"
+          defaultValue={getValues('tourLocation.coordinates')?.[1] || '0'}
           {...register('tourLocation.coordinates.1', { valueAsNumber: true })}
         />
       </div>
