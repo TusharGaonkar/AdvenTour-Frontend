@@ -7,19 +7,19 @@ const Itinerary = ({ tour }: { tour: Record<string, unknown> }) => {
   const { tourLocation } = tour;
 
   const [viewState, setViewState] = useState({
-    longitude: tourLocation.coordinates.at(0),
-    latitude: tourLocation.coordinates.at(1),
-    zoom: 14,
+    latitude: tourLocation?.coordinates?.at(0) || 0,
+    longitude: tourLocation?.coordinates?.at(1) || 0,
+    zoom: 13,
   });
   const token =
     'pk.eyJ1IjoidHVzaGFyZGciLCJhIjoiY2xwOGQxbmozMms3bzJrczRla2wzZDk1aiJ9.Gj3D87Qq2LxjfYlt-ARpxA';
 
   return (
     <>
-      <h1 className="font-semibold">Detailed itinerary</h1>
+      <h1 className="font-semibold text-medium">Detailed itinerary</h1>
       <div className="grid w-full grid-cols-3 p-4 mx-auto space-x-6">
         <Timeline tour={tour} setViewState={setViewState} />
-        <div className="col-span-2">
+        <div className="col-span-2 h-screen sticky top-0">
           <Map
             mapboxAccessToken={token}
             {...viewState}
@@ -27,8 +27,8 @@ const Itinerary = ({ tour }: { tour: Record<string, unknown> }) => {
             mapStyle="mapbox://styles/mapbox/streets-v12"
           >
             <Marker
-              longitude={tourLocation?.coordinates.at(0)}
-              latitude={tourLocation?.coordinates.at(1)}
+              longitude={tourLocation?.coordinates.at(1)}
+              latitude={tourLocation?.coordinates.at(0)}
               anchor="bottom"
             />
 
@@ -43,8 +43,8 @@ const Itinerary = ({ tour }: { tour: Record<string, unknown> }) => {
                 }) =>
                   activities.map(({ location, place, activityName, _id }) => (
                     <Popup
-                      longitude={location.coordinates.at(0)}
-                      latitude={location.coordinates.at(1)}
+                      longitude={location.coordinates.at(1)}
+                      latitude={location.coordinates.at(0)}
                       anchor="bottom"
                       closeButton={false}
                       key={_id}
