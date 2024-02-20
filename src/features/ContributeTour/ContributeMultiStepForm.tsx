@@ -1,9 +1,12 @@
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Button, Chip, Divider } from '@nextui-org/react';
 import toast from 'react-hot-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import { serialize } from 'object-to-formdata';
 import useCustomMultiForm from '../../hooks/useCustomMultiForm';
 import TourBasicInfoForm from './TourBasicInfoForm';
 import TourPriceLocationForm from './TourPriceLocationForm';
@@ -13,6 +16,8 @@ import {
   contributeTourFormSchema,
   type ContributeTourFormSchemaType,
 } from '../../validators/ContributeTourFormValidator';
+import { useUploadNewTourMutation } from '../../redux/slices/contributeNewTourSlice';
+import { useEffect } from 'react';
 
 const items = [
   {
@@ -39,7 +44,6 @@ const ContributeMultiStepForm = () => {
     defaultValues: {
       title: '',
       description: '',
-      address: '',
       priceInRupees: 2000,
       discountInRupees: 0,
       maxPeoplePerBooking: 2,
@@ -56,6 +60,14 @@ const ContributeMultiStepForm = () => {
     mode: 'onChange',
   });
 
+  const [uploadNewTour, { data }] = useUploadNewTourMutation();
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+    }
+  }, [data]);
+
   const {
     register,
     getValues,
@@ -69,6 +81,29 @@ const ContributeMultiStepForm = () => {
     (state: { FAQList: { question: string; answer: string }[] }) => state.FAQList
   );
 
+  const uploadNewTourHandler = async (
+    tourData: Omit<ContributeTourFormSchemaType, 'whatsIncluded' | 'whatsNotIncluded'> & {
+      whatsIncluded: string[];
+      whatsNotIncluded: string[];
+    }
+  ) => {
+    console.log(tourData);
+    tourData.jsonTourData = JSON.stringify(tourData);
+    const serializedTourData = serialize(tourData, {
+      indices: true,
+    });
+
+    toast.promise(
+      uploadNewTour(serializedTourData),
+      {
+        loading: 'Uploading tour...',
+        success: 'Tour uploaded successfully',
+        error: 'Error while uploading tour please try again...',
+      },
+      { className: 'text-xs font-medium' }
+    );
+  };
+
   const handleContributeFormSubmission = () => {
     const formData = getValues();
 
@@ -79,7 +114,10 @@ const ContributeMultiStepForm = () => {
       day: index + 1,
     }));
 
-    const transformedFormData: Record<string, unknown> = {
+    const transformedFormData: Omit<
+      ContributeTourFormSchemaType,
+      'whatsIncluded' | 'whatsNotIncluded'
+    > & { whatsIncluded: string[]; whatsNotIncluded: string[] } = {
       ...formData,
       FAQ: FAQList,
       itinerary: itineraryWithDates,
@@ -96,9 +134,7 @@ const ContributeMultiStepForm = () => {
       transformedFormData.whatsIncluded = whatsIncluded;
       transformedFormData.whatsNotIncluded = whatsNotIncluded;
 
-      toast.success('Your form has been submitted successfully', {
-        className: 'text-xs font-medium',
-      });
+      uploadNewTourHandler(transformedFormData);
     }
   };
 
