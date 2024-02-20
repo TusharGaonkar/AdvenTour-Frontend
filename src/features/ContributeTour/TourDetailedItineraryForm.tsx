@@ -112,12 +112,12 @@ const Activity = ({
               <div className="flex flex-col gap-2">
                 <label
                   className="inline-block text-xs font-medium max-w-max text-white p-2 rounded-lg bg-neutral cursor-pointer"
-                  htmlFor={`uploadImage-${index}`}
+                  htmlFor={`uploadImage-${day}-${index}`}
                 >
                   Upload Image
                   <input
                     type="file"
-                    id={`uploadImage-${index}`}
+                    id={`uploadImage-${day}-${index}`}
                     style={{ display: 'none' }}
                     {...register(`itinerary.${day}.activities.${index}.image`)}
                     accept="image/png, image/jpeg , image/jpg , image/webp"
@@ -187,7 +187,7 @@ const DayPlan = ({
     <div className="flex items-start gap-3 w-full">
       <Input
         type="text"
-        label="Accommodation Included ?"
+        label={`Accommodation Included for Day ${index + 1} ?`}
         labelPlacement="outside"
         placeholder="Type accommodation place name if included, else type No"
         {...register(`itinerary.${index}.accommodationIncluded`)}
@@ -197,7 +197,7 @@ const DayPlan = ({
       />
       <Input
         type="text"
-        label="Food Included ?"
+        label={`Food Included for Day ${index + 1} ?`}
         labelPlacement="outside"
         placeholder="Type if any of Breakfast, Lunch, Dinner included, else type No"
         {...register(`itinerary.${index}.foodIncluded`)}
