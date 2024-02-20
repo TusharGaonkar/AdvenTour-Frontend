@@ -69,13 +69,13 @@ const NavBar = () => {
   const { user, isLoggedIn } = useSelector((state) => state.userInfo);
 
   return (
-    <Navbar className="text-xs">
+    <Navbar className="text-xs mb-4" isBordered>
       <NavbarBrand>
         <p className="font-bold text-inherit">
           <NavLink to="/">
-            <div className="flex items-end justify-end gap-0.5">
-              <img className="object-cover h-9" src={logo} alt="logo" />
-              <span className="text-sm font-bold text-slate-700">AdvenTour</span>
+            <div className="flex items-center justify-end gap-1 p-1">
+              <img className="h-[45px] rounded-full bg-[#c8ffb8]" src={logo} alt="logo" />
+              <span className="text-medium font-bold text-slate-700">AdvenTour</span>
             </div>
           </NavLink>
         </p>
