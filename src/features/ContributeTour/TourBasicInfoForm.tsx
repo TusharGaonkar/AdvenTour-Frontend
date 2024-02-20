@@ -77,7 +77,7 @@ const TourBasicInfoForm = ({
       : undefined
   );
 
-  const [additionalImages, setAdditionalImages] = useState<string[]>(
+  const [additionalCoverImages, setAdditionalImages] = useState<string[]>(
     getValues('additionalCoverImages')?.map((image: File) => URL.createObjectURL(image)) || []
   );
 
@@ -96,15 +96,15 @@ const TourBasicInfoForm = ({
     (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
         const imageURLs = acceptedFiles.map((image) => URL.createObjectURL(image));
-        // select only first three images
-        const newAdditionalImages = [...imageURLs, ...additionalImages].slice(0, 3);
+        // select only first two images
+        const newAdditionalImages = [...imageURLs, ...additionalCoverImages].slice(0, 2);
         setAdditionalImages(newAdditionalImages);
 
         const prevImageFiles = getValues('additionalCoverImages') || [];
-        replaceAdditionalCoverImages([...acceptedFiles, ...prevImageFiles].slice(0, 3));
+        replaceAdditionalCoverImages([...acceptedFiles, ...prevImageFiles].slice(0, 2));
       }
     },
-    [setAdditionalImages, replaceAdditionalCoverImages, additionalImages, getValues]
+    [setAdditionalImages, replaceAdditionalCoverImages, additionalCoverImages, getValues]
   );
 
   return (
@@ -153,12 +153,12 @@ const TourBasicInfoForm = ({
         }}
       />
 
-      <h1 className="font-semibold text-md">Add three more additional images of the tour</h1>
+      <h1 className="font-semibold text-md">Add two more additional images of the tour</h1>
       <div className="flex flex-col gap-2">
-        {additionalImages.length > 0 && (
+        {additionalCoverImages.length > 0 && (
           <div className="flex flex-col gap-2">
             <div className="flex flex-row gap-2">
-              {additionalImages.map((image) => (
+              {additionalCoverImages.map((image) => (
                 <img
                   key={image}
                   src={image}
@@ -178,7 +178,7 @@ const TourBasicInfoForm = ({
         <DropZone
           configuration={{
             onDrop: handleAdditionalImages,
-            maxFiles: 3,
+            maxFiles: 2,
             accept: { 'image/png': ['.png', '.jpg', '.jpeg', '.webp'] },
           }}
         />
