@@ -36,8 +36,8 @@ const ToursPage = () => {
         size="sm"
         color="danger"
       />
+      <NavBar />
       <div className="max-w-6xl mx-auto">
-        <NavBar />
         <FindTours />
         <div className="flex flex-row gap-12">
           <Filters />
