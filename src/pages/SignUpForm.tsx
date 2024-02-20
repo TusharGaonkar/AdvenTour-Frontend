@@ -36,12 +36,12 @@ const SignupForm = () => {
         'Something went wrong while registering the user please try again...';
 
       toast.error(errMessage, {
-        className: 'text-sm',
+        className: 'text-xs font-medium',
         duration: 1000,
       });
     } else if (isSuccess) {
       toast.success('Registration successful please login to continue...', {
-        className: 'text-sm',
+        className: 'text-xs font-medium',
         duration: 5000,
       });
       navigate(-1);
