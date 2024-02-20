@@ -6,7 +6,7 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/web
 const contributeTourFormSchema = z
   .object({
     title: z.string().min(15).max(30),
-    description: z.string().min(15).max(100),
+    description: z.string().min(15).max(500),
     mainCoverImage: z
       .any()
       .refine((file) => {
@@ -23,7 +23,7 @@ const contributeTourFormSchema = z
       }, 'Only .jpg, .jpeg, .png and .webp formats are supported for main cover image.'),
     additionalCoverImages: z
       .array(z.any())
-      .length(3)
+      .length(2)
       .refine((fileList) => {
         if (fileList.length > 0) {
           return fileList.every((file) => ACCEPTED_IMAGE_TYPES.includes(file.type));
@@ -36,9 +36,10 @@ const contributeTourFormSchema = z
         }
         return false;
       }, 'Max additional image size is 3MB , please upload less than 3MB.'),
-    address: z.string().min(6).max(300),
+
     tourLocation: z.object({
       type: z.literal('Point').optional(),
+      address: z.string().min(6).max(300),
       coordinates: z
         .array(z.number())
         .length(2)
