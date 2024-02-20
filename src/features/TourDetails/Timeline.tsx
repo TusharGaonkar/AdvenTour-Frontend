@@ -1,8 +1,8 @@
 /* eslint-disable eqeqeq */
-import { Chip, Divider, Image } from '@nextui-org/react';
+import { Chip, Divider } from '@nextui-org/react';
+import React, { SetStateAction, useCallback, useEffect, useRef } from 'react';
 import dot from '/dot.png';
 import dottedLine from '/noun-dotted-line-19125.png';
-import React, { SetStateAction } from 'react';
 
 const Timeline = ({
   tour,
@@ -14,20 +14,22 @@ const Timeline = ({
   >;
 }) => {
   let activityCount = 0;
+
   return (
     <div className="flex flex-col items-start gap-1">
-      {tour.itinerary.map((day) => (
+      {tour?.itinerary?.map((day) => (
         <div key={day.day} className="relative">
           <h1 className="absolute font-bold top-1 -left-3 text-md">Day {day.day}</h1>
+          <p className="mt-8 p-2 text-xs text-slate-600">{day.description}</p>
           {day.activities.map((activity, index, array) => (
-            // eslint-disable-next-line react/jsx-key
             <div
               className="flex flex-row ml-4"
+              key={activity.activityName}
               onMouseEnter={() =>
                 setViewState({
-                  longitude: activity.location.coordinates.at(0),
-                  latitude: activity.location.coordinates.at(1),
-                  zoom: 14,
+                  latitude: activity.location.coordinates.at(0),
+                  longitude: activity.location.coordinates.at(1),
+                  zoom: 13,
                 })
               }
             >
@@ -40,45 +42,64 @@ const Timeline = ({
                 <div className="w-[80px] h-full">
                   <img
                     src={index == array.length - 1 ? dot : dottedLine}
-                    className="object-cover w-auto h-full "
+                    className="object-cover w-auto h-full"
                     alt=""
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-1 max-h-[300px] w-[280px]">
-                <div className="flex flex-col items-start justify-center gap-1">
-                  <Chip variant="flat" className="text-sm bg-neutral">
-                    <p className="font-semibold text-white">{activity.place}</p>
+              <div className="flex flex-col gap-2 max-h-[300px] w-[280px]">
+                <div className="flex flex-col items-start justify-center gap-2">
+                  <Chip
+                    variant="shadow"
+                    classNames={{
+                      base: 'bg-gradient-to-br from-indigo-400 to-pink-500 border-small border-white/50 shadow-pink-500/30',
+                      content: 'drop-shadow shadow-black text-white font-semibold',
+                    }}
+                  >
+                    {activity.place}
                   </Chip>
-                  <p className="text-sm">{activity.activityName}</p>
+
+                  <p className="text-sm font-semibold leading-relaxed text-slate-700">
+                    {activity.activityName}
+                  </p>
                 </div>
                 {activity.image && (
                   <div className="flex flex-col h-[160px] overflow-hidden rounded-xl">
                     <img
+                      id={activity.activityName}
                       src={activity.image}
                       alt={activity.activityName}
                       className="object-cover h-full"
                     />
                   </div>
                 )}
-                <p className="mt-1 text-xs text-slate-600">{day.description}</p>
-                <div>
-                  {index === array.length - 1 && (
-                    <div className="flex flex-col gap-2 mt-2">
-                      <Chip size="sm" className="text-black" variant="flat">
-                        <p className="font-semibold">{`Accommodation for Day ${day.day} : ${day.accommodationIncluded}`}</p>
-                      </Chip>
-                      <Chip size="sm" variant="flat" className="text-white bg-accent">
-                        <p className="font-semibold">{`Food included:${day.foodIncluded}`}</p>
-                      </Chip>
-                    </div>
-                  )}
-                </div>
-
                 <Divider className="my-2" />
               </div>
             </div>
           ))}
+
+          <div className="flex flex-col gap-2 mt-2 justify-center items-center">
+            <p className="text-xs break-words">
+              <Chip
+                variant="flat"
+                size="sm"
+                classNames={{ base: 'bg-accent text-white', content: 'font-semibold' }}
+              >
+                Accommodation included
+              </Chip>
+              <span className="ml-1">{day.accommodationIncluded}</span>
+            </p>
+            <p className="text-xs break-words">
+              <Chip
+                variant="flat"
+                size="sm"
+                classNames={{ base: 'bg-neutral text-white', content: 'font-semibold' }}
+              >
+                Food included
+              </Chip>
+              <span className="ml-1">{day.foodIncluded}</span>
+            </p>
+          </div>
         </div>
       ))}
     </div>
