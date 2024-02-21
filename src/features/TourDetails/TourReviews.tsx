@@ -16,10 +16,10 @@ const TourReviews = () => {
     },
   ];
   return (
-    <div className="flex flex-col gap-10 p-8">
+    <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold">Reviews</h1>
       <div className="flex flex-row items-start gap-4">
-        <Button variant="flat" size="lg" color="secondary" className="rounded-full">
+        <Button variant="flat" size="lg" color="secondary" className="bg-indigo-400 rounded-full">
           Average Rating 4.5
         </Button>
         <Button size="lg" variant="flat" color="success" className="rounded-full">

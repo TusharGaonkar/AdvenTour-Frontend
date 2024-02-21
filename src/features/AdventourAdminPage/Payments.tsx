@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import { Button, Chip, Divider, Progress, Spinner } from '@nextui-org/react';
 import { useGetPaymentInfoQuery } from '../../redux/slices/admin-getAllBookingsSlice';
 import formatToINR from '../../utils/currencyFormatter';
@@ -54,10 +53,7 @@ const Payments = () => {
             className="sm:text-medium text-sm min-w-min bg-primary text-white"
             onClick={() => navigate('/admin/bookings')}
           >
-            <span>
-              <IoArrowBackCircleOutline className="text-2xl" />
-            </span>
-            All Bookings
+            View all bookings
           </Button>
         </div>
         <Divider />

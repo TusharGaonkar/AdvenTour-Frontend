@@ -77,28 +77,24 @@ const Timeline = ({
               </div>
             </div>
           ))}
+          <div className="flex flex-col gap-1.5 justify-start items-start mx-24 w-full">
+            <Chip
+              variant="flat"
+              size="sm"
+              classNames={{ base: 'bg-accent text-white', content: 'font-semibold' }}
+            >
+              Accommodation included
+            </Chip>
+            <p className="text-xs font-semibold">{day.accommodationIncluded}</p>
 
-          <div className="flex flex-col gap-2 mt-2 justify-center items-center">
-            <p className="text-xs break-words">
-              <Chip
-                variant="flat"
-                size="sm"
-                classNames={{ base: 'bg-accent text-white', content: 'font-semibold' }}
-              >
-                Accommodation included
-              </Chip>
-              <span className="ml-1">{day.accommodationIncluded}</span>
-            </p>
-            <p className="text-xs break-words">
-              <Chip
-                variant="flat"
-                size="sm"
-                classNames={{ base: 'bg-neutral text-white', content: 'font-semibold' }}
-              >
-                Food included
-              </Chip>
-              <span className="ml-1">{day.foodIncluded}</span>
-            </p>
+            <Chip
+              variant="flat"
+              size="sm"
+              classNames={{ base: 'bg-neutral text-white', content: 'font-semibold' }}
+            >
+              Food included
+            </Chip>
+            <p className="text-xs font-semibold">{day.foodIncluded}</p>
           </div>
         </div>
       ))}
