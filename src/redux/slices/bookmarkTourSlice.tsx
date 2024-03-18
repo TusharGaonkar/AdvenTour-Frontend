@@ -3,9 +3,13 @@ import apiSlice from './apiSlice';
 const bookmarkTourSlice = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     getAllBookmarks: build.query<unknown, void>({
-      query: () => ({
+      query: ({ searchString, page }: { searchString: string; page: number } = {}) => ({
         url: '/user/bookmarks',
         method: 'GET',
+        params: {
+          search: searchString || undefined,
+          page,
+        },
       }),
       providesTags: ['Bookmarks'],
     }),
