@@ -1,23 +1,116 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable react/jsx-props-no-spreading */
-import { Input, Button, Progress } from '@nextui-org/react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import {
+  Input,
+  Button,
+  Progress,
+  Modal,
+  ModalContent,
+  ModalBody,
+  ModalHeader,
+  ModalFooter,
+  useDisclosure,
+} from '@nextui-org/react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import coolAdmin from '/3d-casual-life-man-in-front-of-laptop-and-graph-on-web-browser-in-background(1).png';
 import loginFormSchema, { type LoginFormSchemaType } from '../validators/LoginFormValidator';
 import { useLoginAdminMutation } from '../redux/slices/authSlice';
 import { setCredentials } from '../redux/slices/userSlice';
+import { RootState } from '../app/store';
+import { useForgotPasswordMutation } from '../redux/slices/accountRecoverySlice';
+
+const ResetAdminEmailModal = ({
+  isOpen,
+  onOpenChange,
+}: {
+  isOpen: boolean;
+  onOpenChange: () => void;
+}) => {
+  const [email, setEmail] = useState('');
+  const [forgotPassword] = useForgotPasswordMutation();
+
+  const validateEmail = (inputValue: string) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(inputValue);
+  };
+
+  const requestPasswordReset = async () => {
+    if (!validateEmail(email)) {
+      toast.error('Please enter a valid email address', {
+        className: 'text-xs font-medium',
+      });
+      return;
+    }
+
+    const toastID = toast.loading('Requesting password reset...', {
+      className: 'text-xs font-medium',
+    });
+
+    try {
+      const response = await forgotPassword(email).unwrap();
+
+      if (response?.error) {
+        throw new Error(response?.error?.data);
+      }
+
+      toast.dismiss(toastID);
+      toast.success('Password reset email sent successfully, check your email', {
+        className: 'text-xs font-medium',
+      });
+    } catch (error) {
+      toast.dismiss(toastID);
+      toast.error((error as Error)?.data?.message || 'Something went wrong, please try again...', {
+        className: 'text-xs font-medium',
+      });
+    }
+  };
+  return (
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
+      <ModalContent>
+        {(onClose) => (
+          <>
+            <ModalHeader className="flex flex-col gap-1">Forgot your password?</ModalHeader>
+            <ModalBody>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                label="Registered Email"
+                labelPlacement="outside"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button color="default" variant="flat" onPress={onClose}>
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  onClose();
+                  requestPasswordReset();
+                }}
+                className="bg-black text-white"
+              >
+                Reset Password
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
+  );
+};
 
 const AdminLoginForm = () => {
   const [loginAdmin, { isLoading, isError, isSuccess, data: response, error }] =
     useLoginAdminMutation();
 
-  const { isLoggedIn, user } = useSelector<any>((state) => state.userInfo);
+  const { isLoggedIn, user } = useSelector((state: RootState) => state.userInfo);
   const dispatch = useDispatch();
 
   const {
@@ -32,6 +125,9 @@ const AdminLoginForm = () => {
   const location = useLocation();
 
   const redirectURL = location.state?.redirectURL || '/admin';
+
+  const { isOpen, onOpenChange } = useDisclosure();
+
   const onSubmit: SubmitHandler<LoginFormSchemaType> = (formData: LoginFormSchemaType) => {
     loginAdmin(formData);
   };
@@ -102,9 +198,13 @@ const AdminLoginForm = () => {
             />
 
             <div className="flex flex-col">
-              <NavLink to="#" className="self-center text-blue-500 text-[0.9em] font-semibold">
+              <Button
+                variant="light"
+                className="self-center text-blue-500 font-semibold"
+                onPress={onOpenChange}
+              >
                 Forgot Password?
-              </NavLink>
+              </Button>
             </div>
           </div>
 
@@ -127,6 +227,7 @@ const AdminLoginForm = () => {
           className="self-center hidden object-cover w-96 md:block bg-secondary"
         />
       </div>
+      <ResetAdminEmailModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>
   );
 };
