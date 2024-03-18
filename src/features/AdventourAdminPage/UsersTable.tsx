@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable arrow-body-style */
@@ -16,12 +17,14 @@ import {
   Avatar,
   Skeleton,
   Pagination,
+  useDisclosure,
 } from '@nextui-org/react';
 import toast from 'react-hot-toast';
 import { useCallback, useEffect, useState } from 'react';
 import { IoMdRefresh } from 'react-icons/io';
 import { useGetAllUserQuery } from '../../redux/slices/admin-getAllUsersInfoSlice';
 import useDebounce from '../../hooks/useDebounce';
+import ContactUserModal from '../../common/ContactUserModal';
 
 const UsersTable = () => {
   const [role, setRole] = useState<'local-guide' | 'user'>('local-guide');
@@ -29,6 +32,11 @@ const UsersTable = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [inputText, setInputText] = useState<string>('');
+  const { isOpen, onOpenChange } = useDisclosure();
+  const [selectedUser, setSelectedUser] = useState<{ email: string; userName: string }>({
+    email: '',
+    userName: '',
+  });
 
   const debouncedSetSearchQuery = useDebounce(setSearchQuery, 400);
 
@@ -113,7 +121,7 @@ const UsersTable = () => {
             type="text"
             label="Search Users"
             labelPlacement="outside"
-            className="w-1/3"
+            className="md:w-1/3 w-full"
             placeholder="Search by name or email"
             onChange={(event) => handleInputChange(event.target.value)}
             value={inputText}
@@ -187,7 +195,14 @@ const UsersTable = () => {
                     </Chip>
                   </TableCell>
                   <TableCell>
-                    <Button size="md" className="bg-black rounded-full  text-white">
+                    <Button
+                      size="md"
+                      className="bg-black rounded-full  text-white"
+                      onClick={() => {
+                        setSelectedUser({ userName: user?.userName, email: user?.email });
+                        onOpenChange();
+                      }}
+                    >
                       Contact User
                     </Button>
                   </TableCell>
@@ -196,6 +211,7 @@ const UsersTable = () => {
             )}
         </TableBody>
       </Table>
+      <ContactUserModal isOpen={isOpen} onOpenChange={onOpenChange} selectedUser={selectedUser} />
     </div>
   );
 };
