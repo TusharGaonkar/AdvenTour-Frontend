@@ -19,7 +19,7 @@ const getAllBookingsInfoSlice = apiSlice.injectEndpoints({
         method: 'GET',
         params: {
           selectedDate: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : undefined,
-          sortBy: sortBy ? sortBy : 'latest',
+          sortBy: sortBy || 'latest',
           status,
           page,
         },
