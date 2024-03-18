@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Chip, Divider, Progress, Spinner } from '@nextui-org/react';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useGetPaymentInfoQuery } from '../../redux/slices/admin-getAllBookingsSlice';
 import formatToINR from '../../utils/currencyFormatter';
-import toast from 'react-hot-toast';
-import { useEffect } from 'react';
 
 const Payments = () => {
   const { paymentID } = useParams();
@@ -27,7 +27,8 @@ const Payments = () => {
         className: 'font-medium text-xs',
       });
     }
-  }, [isError]);
+  }, [isError, error?.status]);
+
   return (
     <>
       <Progress
