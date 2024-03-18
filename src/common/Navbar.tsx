@@ -1,30 +1,13 @@
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button } from '@nextui-org/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, User } from '@nextui-org/react';
+import { useDisclosure } from '@nextui-org/react';
 import { logoutUser } from '../redux/slices/userSlice';
 import logo from '/advenTourLogo.png';
-
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Avatar,
-  User,
-} from '@nextui-org/react';
+import ProfileSettings from '../pages/ProfileSettings';
 import SearchBar from '../features/Tours/SearchBar';
-
-const landingPageLinks = [
-  {
-    label: 'All tours',
-    link: '/tours',
-  },
-
-  {
-    label: 'Spotlight',
-    link: '#',
-  },
-];
+import { RootState } from '../app/store';
 
 const UserDropDown = ({
   userName,
@@ -36,82 +19,122 @@ const UserDropDown = ({
   avatar: string;
 }) => {
   const dispatch = useDispatch();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   return (
-    <Dropdown placement="bottom-start">
-      <DropdownTrigger>
-        <User
-          as="button"
-          avatarProps={{
-            isBordered: true,
-            src: 'https://i.pravatar.cc/150?u=a042581f4e29026024d',
-          }}
-          className="transition-transform"
-          name={userName}
-        />
-      </DropdownTrigger>
-      <DropdownMenu aria-label="User Actions" variant="flat">
-        <DropdownItem key="user-profile" className="gap-2 h-14">
-          <p className="font-bold">Signed in as</p>
-          <p className="font-bold">{userName}</p>
-        </DropdownItem>
-        <DropdownItem key="settings">Profile Settings</DropdownItem>
-        <DropdownItem key="logout" color="danger" onClick={() => dispatch(logoutUser())}>
-          Logout
-        </DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
+    <>
+      <ProfileSettings isOpen={isOpen} onOpen={onOpen} onOpenChange={onOpenChange} />
+      <Dropdown placement="bottom-start">
+        <DropdownTrigger>
+          <User
+            as="button"
+            avatarProps={{
+              isBordered: true,
+              src: avatar,
+              showFallback: true,
+              name: userName,
+            }}
+            className="transition-transform "
+            name={
+              userRole === 'local-guide' ? 'Local Guide' : userRole === 'admin' ? 'Admin' : 'User'
+            }
+          />
+        </DropdownTrigger>
+        <DropdownMenu aria-label="User Actions" variant="flat">
+          <DropdownItem key="user-profile" className="gap-2 h-14">
+            <p className="font-bold">Signed in as</p>
+            <p className="font-bold">{userName}</p>
+          </DropdownItem>
+          <DropdownItem key="settings" onClick={() => onOpen()}>
+            Profile Settings
+          </DropdownItem>
+          <DropdownItem key="logout" color="danger" onClick={() => dispatch(logoutUser())}>
+            Logout
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+    </>
   );
 };
 
 const NavBar = () => {
   const { pathname } = useLocation();
-
-  const { user, isLoggedIn } = useSelector((state) => state.userInfo);
+  const { user, isLoggedIn } = useSelector((state: RootState) => state.userInfo);
 
   return (
     <Navbar className="text-xs mb-4" isBordered>
-      <NavbarBrand>
-        <p className="font-bold text-inherit">
-          <NavLink to="/">
-            <div className="flex items-center justify-end gap-1 p-1">
-              <img className="h-[45px] rounded-full bg-[#c8ffb8]" src={logo} alt="logo" />
-              <span className="text-medium font-bold text-slate-700">AdvenTour</span>
-            </div>
-          </NavLink>
-        </p>
-      </NavbarBrand>
-      <NavbarContent className="hidden gap-4 sm:flex" justify="center">
-        {pathname === '/' &&
-          landingPageLinks.map((item) => (
-            <NavbarItem key={item.label}>
-              <NavLink to={item.link} className={pathname === item.link ? 'font-semibold' : ''}>
-                {item.label}
-              </NavLink>
+      <NavbarBrand className="flex items-center justify-between gap-2">
+        <NavLink to="/">
+          <div className="flex flex-col sm:flex-row items-center justify-end gap-1 sm:p-2">
+            <img className="h-[45px] rounded-full bg-[#c8ffb8] ml-2" src={logo} alt="logo" />
+            <span className="text-sm font-bold text-slate-700 hidden sm:block">AdvenTour</span>
+          </div>
+        </NavLink>
+        {pathname !== '/' && (
+          <div className="md:w-[400px] flex items-center gap-4">
+            <NavbarItem key="search" className="w-full">
+              <SearchBar />
             </NavbarItem>
-          ))}
-      </NavbarContent>
-      <NavbarContent justify="end" className="">
+            <NavbarItem key="user-profile" className="lg:hidden mt-1">
+              <UserDropDown userName={user?.userName} userRole={user?.role} avatar={user?.avatar} />
+            </NavbarItem>
+          </div>
+        )}
+      </NavbarBrand>
+
+      <NavbarContent as="div" justify="end" className="hidden lg:flex">
         {isLoggedIn ? (
           <>
-            {pathname != '/' && (
-              <NavbarItem key="search" className="w-[400px]">
-                <SearchBar />
-              </NavbarItem>
-            )}
-            <NavbarItem key="contribute">
-              <NavLink to="/contribute">Contribute</NavLink>
+            <NavbarItem
+              key="All tours"
+              className={
+                pathname.includes('/tours') ? 'hidden lg:block font-semibold' : 'hidden lg:block'
+              }
+            >
+              <NavLink to="/tours">All Tours</NavLink>
             </NavbarItem>
-            <NavbarItem key="Bookmarked Tours">
+
+            <NavbarItem
+              key="Bookmarked Tours"
+              className={
+                pathname?.includes('/bookmarks')
+                  ? 'hidden lg:block font-semibold'
+                  : 'hidden lg:block'
+              }
+            >
               <NavLink to="/bookmarks">Bookmarks</NavLink>
             </NavbarItem>
-            <NavbarItem key="bookings">
-              <NavLink to="#">My bookings</NavLink>
+            <NavbarItem
+              key="bookings"
+              className={
+                pathname?.includes('/bookings')
+                  ? 'hidden lg:block font-semibold'
+                  : 'hidden lg:block'
+              }
+            >
+              <NavLink to="/bookings">My bookings</NavLink>
+            </NavbarItem>
+            <NavbarItem
+              key="Dashboard"
+              className={
+                pathname?.includes('/dashboard')
+                  ? 'hidden lg:block font-semibold'
+                  : 'hidden lg:block'
+              }
+            >
+              <NavLink to="/dashboard">Dashboard</NavLink>
             </NavbarItem>
             <NavbarItem
               key="profile"
-              className="flex items-center justify-start pr-2 ml-2 text-white rounded-full bg-slate-500"
+              className="lg:flex lg:items-center lg:justify-start lg:pr-2 lg:ml-2 lg:text-white lg:rounded-full lg:bg-slate-500 hidden"
             >
-              <UserDropDown userName={user?.userName} userRole={user?.role} avatar={user?.avatar} />
+              <div className="hidden md:flex">
+                <UserDropDown
+                  userName={user?.userName}
+                  userRole={user?.role}
+                  avatar={user?.avatar}
+                />
+              </div>
             </NavbarItem>
           </>
         ) : (
