@@ -1,53 +1,124 @@
-import { Button, Chip, Progress } from '@nextui-org/react';
+/* eslint-disable react/jsx-props-no-spreading */
+import { Button, Pagination, Skeleton, Tab, Tabs } from '@nextui-org/react';
+import { useEffect, useRef, useState } from 'react';
+import StatsProvider from '../../common/StatsProvider';
+import { useGetTourReviewsQuery } from '../../redux/slices/getTourReviewsSlice';
+import ReviewModal from './ReviewModal';
+import TourRatingDistribution from './TourRatingDistribution';
 import TourReviewCard from './TourReviewCard';
+import toast from 'react-hot-toast';
 
-const TourReviews = () => {
-  const reviews = [
-    {
-      userName: 'Himanshu',
-      userAvatar: 'https://i.pravatar.cc/150?u=a04258114e29026302d',
-      ratings: 3,
-      reviewTitle: 'Amazing Experience',
-      reviewText:
-        'I would highly recommend this tour. Prashant messaged me the day before and arranged my travel to the start location. On the way to Mysore, Prashant went over the history and the meaning behind many of the the symbols and customs. We made several stops to local sights and Prashant highlighted points of interest. After visiting the palace, we went to lunch where we shared a delicious meal eaten in the custom of the locals (served on a banana leaf and eaten with the hands). After lunch we went on a tour of the market and tasted local fruit, watched the flower vendors weave beautiful arrangements and saw how incense was made. It is a full day packed with lots of memories.',
-      date: '22 November 2023',
-      image:
-        'https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_1316/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1679416718%2Fwlfluohedh1ec0rkzhpu.png',
-    },
-  ];
+const TourReviews = ({ tourID }: { tourID: string }) => {
+  const [sortBy, setSortBy] = useState<'highest' | 'lowest'>('highest');
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const reviewRef = useRef<HTMLDivElement>(null);
+
+  const {
+    data: tourReviewsData,
+    isSuccess,
+    isFetching,
+    isError,
+    error,
+  } = useGetTourReviewsQuery({ tourID, sortBy, page: currentPage });
+
+  const handleScrollToTop = () => {
+    if (reviewRef.current) {
+      reviewRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(error?.data?.message || 'Something went wrong while fetching reviews', {
+        className: 'font-medium text-xs',
+      });
+    }
+  }, [isError, error?.data?.message]);
+
+  useEffect(() => {
+    if (tourReviewsData) {
+      const { page = 1, totalPageCount = 1 } = tourReviewsData?.pagination || {};
+      setTotalPages(totalPageCount);
+      setCurrentPage(page);
+    }
+  }, [tourReviewsData]);
+
+  const handlePageChange = (page: number) => {
+    handleScrollToTop();
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">Reviews</h1>
-      <div className="flex flex-row items-start gap-4">
-        <Button variant="flat" size="lg" color="secondary" className="bg-indigo-400 rounded-full">
-          Average Rating 4.5
-        </Button>
-        <Button size="lg" variant="flat" color="success" className="rounded-full">
-          Write a review
-        </Button>
-      </div>
-      <div className="grid grid-cols-4 gap-16">
-        <div className="flex flex-col items-start justify-start gap-1">
-          {['Excellent', 'Very Good', 'Okay', 'Bad', 'Awful'].map((rating) => (
-            <div className="grid items-center justify-center grid-cols-3 gap-1">
-              <div className="flex flex-col items-end">
-                <Chip size="sm" variant="flat">
-                  <p className="font-semibold leading-none">{rating}</p>
-                </Chip>
-              </div>
-
-              <Progress value={Math.floor(Math.random() * 100)} size="md" color="warning" />
-
-              <p className="text-xs min-w-max">{`Rated by ${Math.floor(
-                Math.random() * 100
-              )} users`}</p>
-            </div>
-          ))}
+    <div className="flex flex-col gap-6 mb-24" ref={reviewRef}>
+      <h1 className="font-semibold md:text-lg p-2">Reviews</h1>
+      <div className="flex lg:flex-row flex-col">
+        <div className="flex gap-2 -mt-5 p-2">
+          {/* using render prop pattern to get stats data */}
+          <StatsProvider tourID={tourID}>
+            {(statsFetchResponse) => {
+              const { data: statsData, isFetching: isStatsFetching } = statsFetchResponse;
+              return (
+                <Skeleton className="rounded-full" isLoaded={isSuccess && !isStatsFetching}>
+                  <Button
+                    variant="flat"
+                    color="secondary"
+                    size="md"
+                    className="rounded-full bg-gradient-to-r from-amber-500 to-pink-500"
+                  >
+                    {`Average Rating ${statsData?.data?.averageRating.toFixed(1) || 'N/A'}`}
+                  </Button>
+                </Skeleton>
+              );
+            }}
+          </StatsProvider>
+          <ReviewModal tourID={tourID} />
         </div>
-        <div className="flex flex-col col-span-3 gap-4">
-          <TourReviewCard review={reviews[0]} />
-          <TourReviewCard review={reviews[0]} />
-          <TourReviewCard review={reviews[0]} />
+      </div>
+      <div className="lg:grid lg:grid-cols-4 lg:gap-16 mt-10 sm:mt-0 sm:px-2">
+        {/* Render prop here */}
+        <StatsProvider tourID={tourID}>
+          {(statsFetchResponse) => (
+            <TourRatingDistribution statsFetchResponse={statsFetchResponse} />
+          )}
+        </StatsProvider>
+        <div className="flex flex-col col-span-3 gap-4 mt-6 p-3">
+          <div className="md:self-end">
+            <p className="text-xs mb-[2px] mx-1">Sort by</p>
+            <Tabs
+              selectedKey={sortBy}
+              onSelectionChange={(key) => setSortBy(key as 'highest' | 'lowest')}
+              aria-label="Sort by tab"
+            >
+              <Tab key="highest" title="Highest Rated" />
+              <Tab key="lowest" title="Lowest Rated" />
+            </Tabs>
+          </div>
+          {isSuccess &&
+            tourReviewsData?.data?.tourReviews?.map(
+              ({ _id, title, user, description, rating, createdAt, travelGroup, reviewImages }) => (
+                <TourReviewCard
+                  key={_id}
+                  title={title}
+                  avatar={user.avatar}
+                  userName={user.userName}
+                  description={description}
+                  rating={rating}
+                  createdAt={createdAt}
+                  travelGroup={travelGroup}
+                  reviewImages={reviewImages}
+                  isLoading={isFetching}
+                />
+              )
+            )}
+          <Pagination
+            total={totalPages}
+            page={currentPage}
+            className="self-center p-4"
+            onChange={handlePageChange}
+            showControls
+          />
         </div>
       </div>
     </div>
