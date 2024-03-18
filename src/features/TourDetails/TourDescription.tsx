@@ -4,9 +4,9 @@ import formatToINR from '../../utils/currencyFormatter';
 
 const TourDescription = ({ tour }: { tour: Record<string, unknown> }) => (
   <div className="flex flex-col items-start gap-3">
-    <h1 className="font-semibold text-medium">About</h1>
-    <p>{tour.description as string}</p>
-    <p>
+    <h1 className="font-semibold md:text-lg">About</h1>
+    <p className="text-sm sm:text-medium">{tour.description as string}</p>
+    <p className="text-sm sm:text-medium">
       Starting from
       <span
         className={
