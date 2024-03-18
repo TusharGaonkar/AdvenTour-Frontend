@@ -2,37 +2,7 @@
 import { Input, Textarea, Listbox, ListboxItem, Checkbox } from '@nextui-org/react';
 import { FieldErrors, UseFormGetValues, UseFormRegister } from 'react-hook-form';
 import { type AdminAcceptFormSchemaType } from '../../validators/Admin-AcceptTourFormValidator';
-
-const adventureActivities = [
-  'Hiking',
-  'Rock Climbing',
-  'Mountain Biking',
-  'Caving',
-  'Canoeing',
-  'Kayaking',
-  'Rafting',
-  'Zip Lining',
-  'Paragliding',
-  'Skydiving',
-  'Bungee Jumping',
-  'Surfing',
-  'Snowboarding',
-  'Skiing',
-  'Hang Gliding',
-  'Scuba Diving',
-  'Snorkeling',
-  'Safari',
-  'Sailing',
-  'Canyoning',
-  'Backpacking',
-  'Off-Roading',
-  'Base Jumping',
-  'Cross-Country Running',
-  'Parkour',
-  'Survival Training',
-  'Trekking',
-  'Camping',
-];
+import adventureActivities from '../../utils/adventureGenres';
 
 const ActivitiesList = ({
   selectedKeys,
