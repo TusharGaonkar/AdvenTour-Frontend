@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import LoginForm from '../pages/loginForm';
+import LoginForm from '../pages/LoginForm';
 import SignupForm from '../pages/SignUpForm';
 import AdventourLandingPage from '../pages/AdventourLandingPage';
 import ToursPage from '../pages/ToursPage';
