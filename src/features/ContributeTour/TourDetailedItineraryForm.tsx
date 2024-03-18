@@ -48,8 +48,8 @@ const Activity = ({
         .fill(0)
         .map((_, index) => (
           <div className="flex flex-col items-start gap-4 w-full" key={index}>
-            <h1 className="text-sm font-semibold text-slate-600">{`Activity ${index + 1}`}</h1>
-            <div className="flex items-start justify-center gap-3 w-full">
+            <h1 className="text-sm font-semibold text-slate-600 mb-1">{`Activity ${index + 1}`}</h1>
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-4 items-start justify-items-center w-full">
               <Input
                 type="text"
                 label="Activity name"
@@ -72,9 +72,9 @@ const Activity = ({
               />
               <Input
                 type="number"
-                label="Enter latitude"
+                label="Enter longitude"
                 labelPlacement="outside"
-                placeholder="Enter latitude"
+                placeholder="Enter Longitude"
                 {...register(`itinerary.${day}.activities.${index}.location.coordinates.0`, {
                   valueAsNumber: true,
                 })}
@@ -90,9 +90,9 @@ const Activity = ({
               />
               <Input
                 type="number"
-                label="Enter longitude"
+                label="Enter latitude"
                 labelPlacement="outside"
-                placeholder="Enter Longitude"
+                placeholder="Enter latitude"
                 {...register(`itinerary.${day}.activities.${index}.location.coordinates.1`, {
                   valueAsNumber: true,
                 })}
@@ -103,7 +103,7 @@ const Activity = ({
                   !!errors?.itinerary?.[day]?.activities?.[index]?.location?.coordinates?.[1]
                 }
                 defaultValue={
-                  getValues(`itinerary.${day}.activities.${index}.location.coordinates.1`) || 0
+                  getValues(`itinerary.${day}.activities.${index}.location.coordinates.0`) || 0
                 }
               />
             </div>
@@ -176,7 +176,7 @@ const DayPlan = ({
     <h1 className="text-md font-semibold text-slate-800">{`Day ${index + 1}`}</h1>
     <Textarea
       label="Description"
-      labelPlacement="outside"
+      labelPlacement="inside"
       placeholder="Enter tour day plan"
       {...register(`itinerary.${index}.description`)}
       errorMessage={errors?.itinerary?.[index]?.description?.message}
@@ -184,27 +184,36 @@ const DayPlan = ({
       defaultValue={getValues(`itinerary.${index}.description`) || ''}
     />
     <Activity day={index} register={register} getValues={getValues} errors={errors} />
-    <div className="flex items-start gap-3 w-full">
-      <Input
-        type="text"
-        label={`Accommodation Included for Day ${index + 1} ?`}
-        labelPlacement="outside"
-        placeholder="Type accommodation place name if included, else type No"
-        {...register(`itinerary.${index}.accommodationIncluded`)}
-        errorMessage={errors?.itinerary?.[index]?.accommodationIncluded?.message}
-        isInvalid={!!errors?.itinerary?.[index]?.accommodationIncluded}
-        defaultValue={getValues(`itinerary.${index}.accommodationIncluded`)}
-      />
-      <Input
-        type="text"
-        label={`Food Included for Day ${index + 1} ?`}
-        labelPlacement="outside"
-        placeholder="Type if any of Breakfast, Lunch, Dinner included, else type No"
-        {...register(`itinerary.${index}.foodIncluded`)}
-        errorMessage={errors?.itinerary?.[index]?.foodIncluded?.message}
-        isInvalid={!!errors?.itinerary?.[index]?.foodIncluded}
-        defaultValue={getValues(`itinerary.${index}.foodIncluded`) || ''}
-      />
+    <div className="flex items-start justify-center gap-3 w-full">
+      <div className="flex flex-col gap-2 w-full flex-1">
+        <label htmlFor={`accommodationIncluded-${index}`} className="text-xs md:text-sm min-w-max">
+          {`Accommodation for Day ${index + 1} ?`}
+        </label>
+        <Input
+          type="text"
+          placeholder="Type accommodation place name if included, else type No"
+          {...register(`itinerary.${index}.accommodationIncluded`)}
+          errorMessage={errors?.itinerary?.[index]?.accommodationIncluded?.message}
+          isInvalid={!!errors?.itinerary?.[index]?.accommodationIncluded}
+          defaultValue={getValues(`itinerary.${index}.accommodationIncluded`)}
+          id={`accommodationIncluded-${index}`}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2 w-full flex-1">
+        <label htmlFor={`foodIncluded-${index}`} className="text-xs md:text-sm min-w-max">
+          {`Food Included for Day ${index + 1} ?`}
+        </label>
+        <Input
+          type="text"
+          placeholder="Type if any of Breakfast, Lunch, Dinner included, else type No"
+          {...register(`itinerary.${index}.foodIncluded`)}
+          errorMessage={errors?.itinerary?.[index]?.foodIncluded?.message}
+          isInvalid={!!errors?.itinerary?.[index]?.foodIncluded}
+          defaultValue={getValues(`itinerary.${index}.foodIncluded`) || ''}
+          id={`foodIncluded-${index}`}
+        />
+      </div>
     </div>
   </div>
 );
