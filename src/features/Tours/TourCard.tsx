@@ -1,4 +1,4 @@
-import { Button, Chip, Divider } from '@nextui-org/react';
+import { Button, Chip } from '@nextui-org/react';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import StarRatings from 'react-star-ratings';
@@ -11,6 +11,7 @@ import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
 } from '../../redux/slices/bookmarkTourSlice';
+import CustomProgressiveImage from '../../common/CustomProgressiveImage';
 
 const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
   const navigate = useNavigate();
@@ -64,8 +65,8 @@ const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
       const distance = getDistance(
         { latitude: getNearbyTours[1], longitude: getNearbyTours[0] },
         {
-          latitude: tour?.tourLocation?.coordinates[1],
           longitude: tour?.tourLocation?.coordinates[0],
+          latitude: tour?.tourLocation?.coordinates[1],
         }
       );
 
@@ -81,42 +82,62 @@ const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
     }
   };
 
+  const label = {
+    '1': 'Awful',
+    '2': 'Bad',
+    '3': 'Okay',
+    '4': 'Good',
+    '5': 'Excellent',
+  };
+
   return (
-    <div className="rounded-tl-xl rounded-bl-xl grid grid-cols-6 grid-rows-3 w-full h-[225px] bg-secondary items-start space-x-2 space-y-3">
-      <img
-        className="object-cover w-full h-full col-span-2 row-span-full rounded-tl-xl rounded-bl-xl"
-        src={tour.mainCoverImage}
-        alt=""
+    <div className="sm:rounded-tl-xl sm:rounded-bl-xl sm:grid sm:grid-cols-6 sm:grid-rows-6 sm:w-full sm:h-[225px] bg-secondary sm:items-start sm:space-x-2 sm:space-y-3 sm:p-2 block p-2">
+      <CustomProgressiveImage
+        src={tour.mainCoverImage as string}
+        alt="tour-main-cover"
+        className="object-cover w-full sm:h-full col-span-2 row-span-full sm:rounded-tl-xl sm:rounded-bl-xl rounded-xl"
       />
 
-      <div className="flex flex-col col-span-3 row-span-2 gap-1 p-2">
-        <p className="text-xl font-semibold">{tour.title}</p>
-        <p className="text-sm text-slate-600">Karwar, Karnataka, India</p>
-        {distanceFromUser && (
-          <Chip size="sm" variant="flat">{`~ Approx ${(distanceFromUser / 1000)
-            .toFixed(2)
-            .toLocaleString()} kms from your location`}</Chip>
+      <div className="flex flex-col gap-1 p-2 sm:col-span-3 w-full h-full">
+        <p className="lg:text-lg sm:text-xl font-semibold">{tour.title}</p>
+        <p className="sm:text-sm text-xs text-slate-600 ">{tour?.tourLocation?.address}</p>
+        {getNearbyTours && (
+          <Chip size="sm" variant="flat" className="break-words">
+            {`Around ${(distanceFromUser / 1000).toFixed(2).toLocaleString()} kms away from you`}
+          </Chip>
         )}
         <StarRatings
-          rating={4}
+          rating={Math.floor(tour?.ratingsAverage as number) || 0}
           starRatedColor="green"
           numberOfStars={5}
           name="rating"
+          starSpacing="4px"
           starDimension="20px"
         />
-        <div className="flex items-center gap-2">
-          <div className="border-1.5 border-green-200 max-w-max p-0.5 text-xs font-semibold rounded-lg">
-            <p>4.2</p>
-          </div>
-          <p className="text-xs font-semibold">Excellent</p>
+
+        <div className="border-1.5 border-green-200 max-w-max p-0.5 font-semibold rounded-lg mt-1 flex items-center gap-1">
+          <p className="text-xs">
+            {tour?.ratingsAverage === 0 ? 'Unrated' : tour?.ratingsAverage.toFixed(1)}
+          </p>
+          <p className="text-xs font-semibold">
+            {label[Math.round(tour?.ratingsAverage as number).toString()]}
+          </p>
         </div>
       </div>
-      <div className="flex flex-row items-center col-span-3 col-start-3 row-start-3 gap-2">
+      <div className="p-1 sm:text-white break-words sm:bg-neutral/90 flex flex-row gap-1 lg:gap-0 md:items-start items-center md:flex-col rounded-tl-xl rounded-bl-xl col-start-6 sm:row-start-1">
+        <p className="text-sm">starting from</p>
+        <p className="lg:text-xl font-semibold">{`${formatToINR(tour.priceInRupees)}/-`}</p>
+      </div>
+      <div className="flex flex-row items-center p-1 sm:col-span-3 sm:col-start-3 sm:row-start-5 sm:gap-3 gap-2">
         <Button
-          className="flex items-center bg-transparent rounded-md border-1.5 "
+          className="flex items-center bg-transparent rounded-md border-1.5"
           onClick={handleClickOnBookmark}
         >
-          {isBookmarked ? <FaHeart className="text-xl text-primary" /> : <FaRegHeart />}
+          {isBookmarked ? (
+            <FaHeart className="text-xl text-primary hover:scale-[1.6] transition-all" />
+          ) : (
+            <FaRegHeart className="transition-all hover:scale-[1.6]" />
+          )}
         </Button>
         <Button
           color="primary"
@@ -125,10 +146,6 @@ const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
         >
           View Details
         </Button>
-      </div>
-      <div className="p-1 text-white break-words bg-neutral/90 rounded-tl-xl rounded-bl-xl">
-        <p className="text-sm">starting from</p>
-        <p className="text-xl font-semibold">{`${formatToINR(tour.priceInRupees)}/-`}</p>
       </div>
     </div>
   );
