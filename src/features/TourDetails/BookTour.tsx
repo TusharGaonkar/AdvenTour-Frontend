@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/jsx-one-expression-per-line */
 import { Button, Chip, Divider, Skeleton } from '@nextui-org/react';
 import { format } from 'date-fns';
@@ -49,7 +50,7 @@ const initiatePayment = async (
       credentials: 'include',
     });
     if (!getKeyResponse.ok) {
-      throw new Error('Something issue with the payment gateway try again later...');
+      throw new Error('There was an issue with the payment gateway try again later...');
     }
 
     const { data: { keyID = '' } = {} } = (await getKeyResponse.json()) || {};
@@ -74,7 +75,7 @@ const initiatePayment = async (
     });
 
     if (!orderResponse.ok) {
-      throw new Error('Something issue with the payment gateway try again later...');
+      throw new Error('Something went wrong while creating order...');
     }
 
     const { data: { orderID = '', bookingID = '', expiresIn = '' } = {} } =
@@ -140,6 +141,7 @@ const BookTour = ({
   maxPeoplePerBooking: number;
 }) => {
   const { _id: tourID = '', tourStartDates = [] } = tour || {};
+
   if (!tourID || tourStartDates.length === 0) throw new Error('Something went wrong');
 
   const [bookingDisabled, setBookingDisabled] = useState(false);
@@ -147,8 +149,19 @@ const BookTour = ({
     ?.map((date: string) => new Date(date))
     .filter((date: Date) => date > new Date());
 
+  if (tourDates.length === 0) {
+    return (
+      <div className="text-center p-5 bg-secondary rounded-xl h-full">
+        <p className="font-semibold">Unfortunately no upcoming tour dates found!</p>
+      </div>
+    );
+  }
+
   const [peopleCount, setPeopleCount] = useState(1);
-  const [startDate, setStartDate] = useState<string>(format(tourDates[0], 'yyyy-MM-dd'));
+
+  const [startDate, setStartDate] = useState<string>(
+    tourDates.length > 0 ? format(tourDates[0], 'yyyy-MM-dd') : ''
+  );
 
   const handleDateChange = (date: Date) => {
     const formattedDate = format(date, 'yyyy-MM-dd');
@@ -199,7 +212,7 @@ const BookTour = ({
         className: 'text-xs font-medium',
       });
       navigate('/login');
-    } else if (user && user.role === 'local-guide') {
+    } else if (user && (user.role === 'local-guide' || user.role === 'admin')) {
       toast.error('Only users can book a tour...', {
         className: 'text-xs font-medium',
       });
@@ -222,7 +235,7 @@ const BookTour = ({
   return (
     <div className="flex flex-col gap-3 border-1 rounded-xl">
       <h1 className="font-semibold text-center text-medium mt-3">Book Tour</h1>
-      <div className="flex justify-between items-baseline rounded-md p-3">
+      <div className="flex sm:flex-row flex-col-reverse sm:justify-between sm:items-baseline sm:rounded-md p-3">
         <DayPicker
           mode="single"
           numberOfMonths={1}
@@ -237,13 +250,13 @@ const BookTour = ({
             day < new Date()
           }
         />
-        <Chip className="bg-accent text-white" size="md" variant="flat">
+        <Chip className="bg-accent text-white sm:ml-0 ml-4" size="md" variant="flat">
           {`${tourStartDates?.length} available dates`}
         </Chip>
       </div>
 
       <div className="flex flex-col gap-4 p-3 shadow-md rounded-xl bg-secondary">
-        <div className="flex gap-2 items-baseline justify-between">
+        <div className="flex sm:flex-row flex-col gap-2 items-baseline justify-between">
           <div className="flex flex-col flex-1 gap-2 p-3">
             <Skeleton isLoaded={!isFetching}>
               <Chip size="sm" color="danger" variant="dot">
@@ -262,9 +275,9 @@ const BookTour = ({
             </Skeleton>
           </div>
 
-          <div className="flex gap-2 items-baseline">
+          <div className="flex gap-1 items-baseline flex-shrink-0">
             <p className="font-medium text-sm text-white rounded-full p-2 leading-relaxed bg-neutral">
-              Reserve spot for
+              Reserve spot
             </p>
 
             <div className="flex items-baseline">
@@ -296,12 +309,14 @@ const BookTour = ({
             </Skeleton>
           )}
           <Skeleton isLoaded={!isFetching}>
-            <p className="font-semibold rounded-full min-w-max text-medium text-primary">
-              {`Total ( ${bookingData?.data?.bookingFor} x ${formatToINR(
-                bookingData?.data?.pricePerPerson
-              )} ) = ${formatToINR(bookingData?.data?.totalCost)} `}
-              <span className="text-xs font-normal text-slate-500">discount inc.</span>
-            </p>
+            {!isError && (
+              <p className="font-semibold rounded-full min-w-max text-medium text-primary">
+                {`Total ( ${bookingData?.data?.bookingFor} x ${formatToINR(
+                  bookingData?.data?.pricePerPerson
+                )} ) = ${formatToINR(bookingData?.data?.totalCost)} `}
+                <span className="text-xs font-normal text-slate-500">discount inc.</span>
+              </p>
+            )}
           </Skeleton>
         </div>
         <div className="flex items-center gap-3">
