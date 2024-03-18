@@ -11,7 +11,8 @@ const store = configureStore({
     [filterToursSlice.name]: filterToursSlice.reducer,
     [FAQSlice.name]: FAQSlice.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }).concat(apiSlice.middleware),
   devTools: true,
 });
 
