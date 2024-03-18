@@ -139,7 +139,7 @@ const TourPriceLocationForm = ({
   };
 
   return (
-    <div className="grid items-start grid-cols-2 gap-6">
+    <div className="grid items-start md:grid-cols-2 gap-6">
       <Input
         type="text"
         label="Tour address"
@@ -155,18 +155,18 @@ const TourPriceLocationForm = ({
       <div className="grid grid-cols-2 gap-1">
         <Input
           type="number"
-          label="Latitude"
-          placeholder="Enter latitude"
-          defaultValue={getValues('tourLocation.coordinates')?.[0] || '0'}
+          label="Longitude"
+          placeholder="Enter longitude"
           labelPlacement="outside"
+          defaultValue={getValues('tourLocation.coordinates')?.[0] || '0'}
           {...register('tourLocation.coordinates.0', { valueAsNumber: true })}
         />
         <Input
           type="number"
-          label="Longitude"
-          placeholder="Enter longitude"
-          labelPlacement="outside"
+          label="Latitude"
+          placeholder="Enter latitude"
           defaultValue={getValues('tourLocation.coordinates')?.[1] || '0'}
+          labelPlacement="outside"
           {...register('tourLocation.coordinates.1', { valueAsNumber: true })}
         />
       </div>
