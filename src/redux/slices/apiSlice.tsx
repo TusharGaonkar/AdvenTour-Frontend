@@ -5,6 +5,11 @@ const BASE_URL = 'http://localhost:2000/api/v-1.0';
 
 const baseQuery = fetchBaseQuery({ baseUrl: BASE_URL, credentials: 'include' }); // include credentials to allow cookies to be sent with requests
 
+const interceptorAllowList = (url: string) => {
+  const allowList = ['login', 'register', 'forgotPassword', 'resetPassword'];
+  return allowList.some((allowedUrl) => url.includes(allowedUrl));
+};
+
 // intercept auth errors which are incase unhandled by protected route pages and redirect to login
 const interceptor: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
@@ -12,7 +17,7 @@ const interceptor: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>
   extraOptions
 ) => {
   const result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
+  if (result.error && result.error.status === 401 && !interceptorAllowList(args.url)) {
     if (args.url.includes('admin')) {
       window.location.href = '/admin/login';
     } else {
@@ -23,7 +28,7 @@ const interceptor: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>
 };
 
 const apiSlice = createApi({
-  tagTypes: ['Bookmarks', 'Tours', 'adminBookingsInfo'],
+  tagTypes: ['Bookmarks', 'Tours', 'adminBookingsInfo', 'TourReviews', 'userBookings'],
   reducerPath: 'api',
   baseQuery: interceptor,
   endpoints: () => ({}),
