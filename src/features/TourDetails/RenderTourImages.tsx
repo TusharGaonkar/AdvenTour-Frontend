@@ -1,30 +1,39 @@
+/* eslint-disable react/no-unknown-property */
 import { PhotoProvider, PhotoView } from 'react-photo-view';
-import { Image } from '@nextui-org/react';
+import CustomProgressiveImage from '../../common/CustomProgressiveImage';
 
-const RenderTourImages = ({ tour }: { tour: Record<string, unknown> }) => (
-  <PhotoProvider>
-    <div className="grid grid-cols-2 grid-rows-2  h-[440px]  gap-3 justify-center cursor-pointer">
-      <div className="w-full h-full row-span-2 overflow-hidden rounded-xl">
-        <PhotoView key={tour?.mainCoverImage} src={tour?.mainCoverImage as string}>
-          <img src={tour?.mainCoverImage as string} alt="" className="object-cover w-full h-full" />
+const RenderTourImages = ({ tour }: { tour: Record<string, unknown> }) => {
+  // Boost LCP score compresses the images 2x the original size
+  const cloudinaryImageOptimizeConfig = 'upload/w_1000/q_auto/f_avif';
+  return (
+    <PhotoProvider>
+      <div className="grid grid-cols-2 grid-rows-2 lg:h-[500px] cursor-pointer p-2 gap-2 -mt-4">
+        <PhotoView key={tour?.mainCoverImage as string} src={tour?.mainCoverImage as string}>
+          <CustomProgressiveImage
+            src={(tour?.mainCoverImage as string)?.replace('upload', cloudinaryImageOptimizeConfig)}
+            alt="tour-main-cover"
+            className="object-cover w-full h-full rounded-xl col-span-2 row-span-2 md:col-span-1"
+            fetchpriority="high"
+          />
         </PhotoView>
-      </div>
 
-      {tour?.additionalCoverImages?.map((image: string, index: number) =>
-        index < 2 ? (
-          <div className="w-full h-full overflow-hidden rounded-xl">
-            <PhotoView key={image} src={image}>
-              <Image
-                src={image}
-                alt="additional-images-tour"
-                className="object-cover w-full h-full"
-              />
-            </PhotoView>
-          </div>
-        ) : null
-      )}
-    </div>
-  </PhotoProvider>
-);
+        {tour?.additionalCoverImages?.map((image: string, index: number) =>
+          index < 2 ? (
+            <div className="w-full overflow-hidden rounded-xl" key={image}>
+              <PhotoView src={image}>
+                <CustomProgressiveImage
+                  src={(image as string).replace('upload', cloudinaryImageOptimizeConfig)}
+                  alt="additional-images-tour"
+                  className="object-cover w-full"
+                  loading="lazy"
+                />
+              </PhotoView>
+            </div>
+          ) : null
+        )}
+      </div>
+    </PhotoProvider>
+  );
+};
 
 export default RenderTourImages;
