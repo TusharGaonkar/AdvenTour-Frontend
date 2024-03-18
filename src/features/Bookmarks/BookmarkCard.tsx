@@ -28,30 +28,30 @@ const BookmarksCard = ({ bookmark }: { bookmark: Record<string, unknown> }) => {
     }
   };
 
-  const handleModal = (id: string, title: string) => {
+  const handleModal = (id: string, tourTitle: string) => {
     swal({
-      title: 'Remove Bookmark?',
-      text: 'Are you sure you want to remove ' + title + ' from your bookmarks?',
+      tourTitle: 'Remove Bookmark?',
+      text: `Are you sure you want to remove ${tourTitle} from your bookmarks?`,
       icon: 'warning',
       buttons: true,
       dangerMode: true,
     }).then((willDelete) => {
-      if (willDelete) handleDelete(id, title);
+      if (willDelete) handleDelete(id, tourTitle);
     });
   };
 
   return (
-    <Card isFooterBlurred className="w-[320px] h-[280px] col-span-12 sm:col-span-7 shadow-lg">
+    <Card isFooterBlurred className="lg:w-[320px] lg:h-[280px] shadow-lg">
       <CardHeader className="absolute z-10 flex flex-row items-center justify-start gap-2 top-1">
         <h4 className="text-xl font-semibold text-white/90">{title}</h4>
       </CardHeader>
       <Image
         removeWrapper
-        alt="Relaxing app background"
+        alt="bookmark-tour"
         className="z-0 object-cover w-full h-full"
         src={mainCoverImage}
       />
-      <CardFooter className="absolute bottom-0 z-10 bg-black/40 border-t-1 border-default-600 dark:border-default-100">
+      <CardFooter className="absolute bottom-0 z-10 bg-black/40 border-t-1 border-default-600">
         <div className="flex items-center flex-grow gap-2">
           <CiBookmarkCheck className="text-2xl text-white" />
           <div className="flex flex-col">
