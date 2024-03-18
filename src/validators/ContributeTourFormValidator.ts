@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const MAX_FILE_SIZE = 3000000; // 3MB
+const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 const contributeTourFormSchema = z
@@ -46,14 +46,14 @@ const contributeTourFormSchema = z
         .refine((coordinates) => {
           if (coordinates.length === 2) {
             return (
-              coordinates[0] >= -90 &&
-              coordinates[0] <= 90 &&
-              coordinates[1] >= -180 &&
-              coordinates[1] <= 180
+              coordinates[0] >= -180 &&
+              coordinates[0] <= 180 &&
+              coordinates[1] >= -90 &&
+              coordinates[1] <= 90
             );
           }
           return false;
-        }, 'Invalid coordinates in tour location. Latitude and longitude must be between -90 and 90 and -180 and 180 respectively.'),
+        }, 'Invalid coordinates in activities. Longitude and Latitude must be between -180 and 180 , -90 and 90 respectively.'),
     }),
     priceInRupees: z.number().min(1),
     discountInRupees: z.number().min(0),
@@ -111,14 +111,14 @@ const contributeTourFormSchema = z
                 .refine((coordinates) => {
                   if (coordinates.length === 2) {
                     return (
-                      coordinates[0] >= -90 &&
-                      coordinates[0] <= 90 &&
-                      coordinates[1] >= -180 &&
-                      coordinates[1] <= 180
+                      coordinates[0] >= -180 &&
+                      coordinates[0] <= 180 &&
+                      coordinates[1] >= -90 &&
+                      coordinates[1] <= 90
                     );
                   }
                   return false;
-                }, 'Invalid coordinates in activities. Latitude and longitude must be between -90 and 90 and -180 and 180 respectively.'),
+                }, 'Invalid coordinates in activities. Longitude and Latitude must be between -180 and 180 , -90 and 90 respectively.'),
             }),
 
             image: z
@@ -127,13 +127,13 @@ const contributeTourFormSchema = z
                 if (file.length > 0) {
                   return file[0]?.size <= MAX_FILE_SIZE;
                 }
-                return true;
+                return false;
               }, 'Max image size is 3MB in activity, please upload less than 3MB.')
               .refine((file) => {
                 if (file.length > 0) {
                   return ACCEPTED_IMAGE_TYPES.includes(file[0]?.type);
                 }
-                return true;
+                return false;
               }, 'Only .jpg, .jpeg, .png and .webp formats are supported.'),
           })
         ),
