@@ -16,6 +16,10 @@ const SelectTourDate = ({
     setTourDate(date);
   }, [date, setTourDate]);
 
+  useEffect(() => {
+    setDate(tourDate);
+  }, [tourDate]);
+
   return (
     <Input
       value={date}
