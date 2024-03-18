@@ -1,4 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { enableMapSet } from 'immer';
+
+enableMapSet();
 
 const initialState = {
   priceInRupees: [700, 30000],
@@ -13,18 +16,18 @@ const initialState = {
     3: false,
     4: false,
   },
-
   ageGroup: {
     Children: true,
     Teenagers: true,
     Adults: true,
     Seniors: true,
   },
-  tourRating: null,
+  tourRating: '0',
   searchToursString: '',
   getNearbyTours: null,
   tourGroupSize: 1,
   tourStartDate: '',
+  tourCategory: new Set<string>([]),
 };
 
 const filterToursSlice = createSlice({
@@ -57,7 +60,7 @@ const filterToursSlice = createSlice({
     setGetNearbyTours(state, action) {
       if (Array.isArray(action.payload) && action.payload.length === 2) {
         state.getNearbyTours = [...action.payload];
-      }
+      } else state.getNearbyTours = null;
     },
 
     setTourGroupSize(state, action) {
@@ -68,6 +71,14 @@ const filterToursSlice = createSlice({
       if (typeof action.payload === 'string') state.tourStartDate = action.payload;
     },
 
+    setTourCategory(state, action) {
+      const category = action.payload;
+      if (state.tourCategory.has(category)) {
+        state.tourCategory.delete(category);
+      } else {
+        state.tourCategory.add(category as string);
+      }
+    },
     resetToursQueryString() {
       return initialState;
     },
@@ -84,6 +95,7 @@ export const {
   setGetNearbyTours,
   setTourGroupSize,
   setTourStartDate,
+  setTourCategory,
   resetToursQueryString,
 } = filterToursSlice.actions;
 
