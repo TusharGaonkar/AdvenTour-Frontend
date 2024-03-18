@@ -23,7 +23,6 @@ import {
   SelectItem,
   Pagination,
 } from '@nextui-org/react';
-
 import DatePicker from 'react-datepicker';
 import {
   useCancelAndRefundBookingMutation,
@@ -39,7 +38,7 @@ const DisplayBookings = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedDate, setSelectedDate] = useState<null | Date>(null);
   const [sortBy, setSorBy] = useState<'latest' | 'oldest'>('latest');
-  const [status, setStatus] = useState<'confirmed' | 'cancelled'>('confirmed');
+  const [status, setStatus] = useState<'confirmed' | 'cancelled' | 'userCancelled'>('confirmed');
 
   const {
     data: bookingsData,
@@ -139,10 +138,10 @@ const DisplayBookings = () => {
       className: 'font-medium text-xs',
     });
     try {
-      const response: any = await cancelBooking(bookingID);
+      const response = await cancelBooking(bookingID);
 
       if (!response || response.error) {
-        throw new Error('Failed to cancel the booking');
+        throw new Error(response?.error?.data?.message || 'Failed to cancel the booking');
       }
     } catch (error) {
       toast.error(error?.message || 'Failed to cancel the booking', {
@@ -168,7 +167,7 @@ const DisplayBookings = () => {
     <div className="flex flex-col gap-6 p-3">
       <h1 className="text-2xl font-bold text-primary">All Bookings</h1>
 
-      <div className="flex flex-col gap-2 sm:flex sm:flex-row sm:items-end sm:gap-2">
+      <div className="flex flex-col lg:flex-row gap-2">
         <Select
           label="Sort by"
           placeholder="Sort by"
@@ -176,7 +175,7 @@ const DisplayBookings = () => {
           radius="lg"
           labelPlacement="outside"
           onChange={(event) => handleSelectChange(event.target.value as 'latest' | 'oldest')}
-          className="sm:w-[400px] w-full self-center"
+          className="lg:w-[300px]"
         >
           <SelectItem key="latest" value="latest">
             Latest
@@ -186,10 +185,10 @@ const DisplayBookings = () => {
           </SelectItem>
         </Select>
 
-        <div className="flex gap-1 p-1 items-end">
-          <div className="flex flex-col gap-2">
+        <div className="flex gap-2 items-end">
+          <div className="flex flex-col gap-2 w-full">
             <p className="text-black min-w-max text-sm">Filter by tour start date</p>
-            <div className="border-1 rounded-md">
+            <div className="border-1 rounded-md w-full">
               <DatePicker selected={selectedDate} onChange={handleDateChange} showIcon />
             </div>
           </div>
@@ -198,8 +197,8 @@ const DisplayBookings = () => {
           </Button>
         </div>
 
-        <div className="flex sm:justify-end w-full gap-2 items-center">
-          <Button variant="flat" color="success" onClick={() => refetch()}>
+        <div className="flex flex-col lg:flex-row w-full self-end lg:justify-end gap-2 mt-2 sm:mt-0">
+          <Button variant="flat" color="success" onClick={() => refetch()} className="max-w-max">
             <span>
               <IoMdRefresh size={17} />
             </span>
@@ -213,6 +212,7 @@ const DisplayBookings = () => {
           >
             <Tab key="confirmed" title="Confirmed" />
             <Tab key="cancelled" title="Cancelled" />
+            <Tab key="userCancelled" title="Refunds to process" />
           </Tabs>
         </div>
       </div>
@@ -316,16 +316,17 @@ const DisplayBookings = () => {
                       >
                         Payment Details
                       </DropdownItem>
-                      {status === 'confirmed' && (
-                        <DropdownItem
-                          key="delete"
-                          className="text-danger"
-                          color="danger"
-                          onClick={() => cancelBookingModal(booking?._id)}
-                        >
-                          Cancel & Refund
-                        </DropdownItem>
-                      )}
+                      {status === 'confirmed' ||
+                        (status === 'userCancelled' && (
+                          <DropdownItem
+                            key="delete"
+                            className="text-danger"
+                            color="danger"
+                            onClick={() => cancelBookingModal(booking?._id)}
+                          >
+                            Cancel & Refund
+                          </DropdownItem>
+                        ))}
                     </DropdownMenu>
                   </Dropdown>
                 </TableCell>
