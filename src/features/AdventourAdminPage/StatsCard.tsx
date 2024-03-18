@@ -8,8 +8,8 @@ const StatsCard = ({
   icon,
 }: {
   title: string;
-  value: number;
-  style?: React.CSSProperties;
+  value: number | string;
+  style: React.CSSProperties;
   isLoaded: boolean;
   icon?: JSX.Element;
 }) => (
