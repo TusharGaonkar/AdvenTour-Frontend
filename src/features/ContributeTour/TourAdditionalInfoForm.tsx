@@ -56,6 +56,7 @@ const Question = ({
       <Textarea
         label="Your answer"
         labelPlacement="outside"
+        disableAnimation
         placeholder="Enter answer"
         onChange={handleAnswerInputChange}
         defaultValue={answer}
@@ -133,6 +134,7 @@ const TourAdditionalInfoForm = ({
         label="What's included"
         labelPlacement="outside"
         placeholder="Enter what's included"
+        disableAnimation
         {...register('whatsIncluded')}
         isInvalid={!!errors.whatsIncluded}
         errorMessage={errors.whatsIncluded?.message}
@@ -142,6 +144,7 @@ const TourAdditionalInfoForm = ({
         label="What's not Included"
         labelPlacement="outside"
         placeholder="Enter what's not included"
+        disableAnimation
         {...register('whatsNotIncluded')}
         isInvalid={!!errors.whatsNotIncluded}
         errorMessage={errors.whatsNotIncluded?.message}
