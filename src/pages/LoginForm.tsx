@@ -1,23 +1,118 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable react/jsx-props-no-spreading */
-import { Input, Button, Progress } from '@nextui-org/react';
+import {
+  Input,
+  Progress,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from '@nextui-org/react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import coolBoy from '/3d-casual-life-face-scan.png';
 import loginFormSchema, { type LoginFormSchemaType } from '../validators/LoginFormValidator';
 import { useLoginUserMutation } from '../redux/slices/authSlice';
 import { setCredentials } from '../redux/slices/userSlice';
+import { RootState } from '../app/store';
+import { useForgotPasswordMutation } from '../redux/slices/accountRecoverySlice';
+
+const ResetEmailModal = ({
+  isOpen,
+  onOpenChange,
+}: {
+  isOpen: boolean;
+  onOpenChange: () => void;
+}) => {
+  const [email, setEmail] = useState('');
+  const [forgotPassword] = useForgotPasswordMutation();
+
+  const validateEmail = (inputValue: string) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(inputValue);
+  };
+
+  const requestPasswordReset = async () => {
+    if (!validateEmail(email)) {
+      toast.error('Please enter a valid email address', {
+        className: 'text-xs font-medium',
+      });
+      return;
+    }
+
+    const toastID = toast.loading('Requesting password reset...', {
+      className: 'text-xs font-medium',
+    });
+
+    try {
+      const response = await forgotPassword(email).unwrap();
+
+      if (response?.error) {
+        throw new Error(response?.error?.data);
+      }
+
+      toast.dismiss(toastID);
+      toast.success('Password reset email sent successfully, check your email', {
+        className: 'text-xs font-medium',
+      });
+    } catch (error) {
+      toast.dismiss(toastID);
+      toast.error((error as Error)?.data?.message || 'Something went wrong, please try again...', {
+        className: 'text-xs font-medium',
+      });
+    }
+  };
+  return (
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
+      <ModalContent>
+        {(onClose) => (
+          <>
+            <ModalHeader className="flex flex-col gap-1">Forgot your password?</ModalHeader>
+            <ModalBody>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                label="Registered Email"
+                labelPlacement="outside"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button color="default" variant="flat" onPress={onClose}>
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  onClose();
+                  requestPasswordReset();
+                }}
+                className="bg-black text-white"
+              >
+                Reset Password
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
+  );
+};
 
 const LoginForm = () => {
+  const { isOpen, onOpenChange } = useDisclosure();
+
   const [loginUser, { isLoading, isError, isSuccess, data: response, error }] =
     useLoginUserMutation();
 
-  const { isLoggedIn } = useSelector<any>((state) => state.userInfo);
+  const { isLoggedIn } = useSelector((state: RootState) => state.userInfo);
   const dispatch = useDispatch();
 
   const {
@@ -42,15 +137,17 @@ const LoginForm = () => {
         'message' in error.data
       ) {
         toast.error(error.data.message as string, {
-          className: 'text-sm',
+          className: 'text-xs font-medium',
         });
       } else {
-        toast.error('Something went wrong, please try again...');
+        toast.error('Something went wrong, please try again...', {
+          className: 'text-xs font-medium',
+        });
       }
     } else if (isSuccess && response && response.data && 'user' in response.data) {
       const { user } = response.data;
       toast.success(`Welcome back ${user.userName}!`, {
-        className: 'text-sm',
+        className: 'text-xs ont-medium',
       });
       dispatch(setCredentials(response?.data));
     }
@@ -104,9 +201,13 @@ const LoginForm = () => {
             />
 
             <div className="flex flex-col">
-              <NavLink to="#" className="self-center text-blue-500 text-[0.9em] font-semibold">
+              <Button
+                variant="light"
+                className="self-center text-blue-500 font-semibold"
+                onPress={onOpenChange}
+              >
                 Forgot Password?
-              </NavLink>
+              </Button>
             </div>
           </div>
 
@@ -122,10 +223,7 @@ const LoginForm = () => {
           <div className="w-full">
             <div className="w-full h-[0.3px] bg-slate-500" />
 
-            <h2 className="mt-2 text-xs text-center text-blue-100 text-slate-500">
-              {' '}
-              Or login with
-            </h2>
+            <h2 className="mt-2 text-xs text-center text-slate-700"> Or login with</h2>
             <div className="flex flex-col mt-6 space-y-3 md:flex-row md:space-y-0 md:space-x-3">
               <button className="w-full p-3 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white">
                 <div className="flex flex-row items-center justify-center space-x-3">
@@ -159,6 +257,8 @@ const LoginForm = () => {
           className="self-center hidden object-cover w-96 md:block"
         />
       </div>
+
+      <ResetEmailModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>
   );
 };
