@@ -9,25 +9,27 @@ const SelectGroupSize = ({
   setGroupSize: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const allGroupSizes = ['1', '2', '3', '4'];
-  const [input, setInput] = useState(groupSize);
+  const [input, setInput] = useState(new Set([groupSize.toString()]));
 
   useEffect(() => {
-    setGroupSize(+input);
+    const selectedGroupSize = [...input.values()][0];
+    setGroupSize(Number(selectedGroupSize));
   }, [input, setGroupSize]);
+
+  useEffect(() => {
+    setInput(new Set([groupSize.toString()]));
+  }, [groupSize]);
 
   return (
     <Select
       label="Group Size"
       placeholder="Select group size"
-      className="max-w-xs"
-      defaultSelectedKeys={[input.toString()]}
-      onChange={(event) => {
-        if (event.target.value) setInput(+event.target.value);
-      }}
+      selectedKeys={input}
+      onSelectionChange={setInput}
     >
       {allGroupSizes.map((item) => (
         <SelectItem value={item} key={item}>
-          {item}
+          {item === '4' ? '4 and more' : item}
         </SelectItem>
       ))}
     </Select>
