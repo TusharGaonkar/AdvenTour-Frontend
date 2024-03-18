@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Chip } from '@nextui-org/react';
 import { useDispatch, useSelector } from 'react-redux';
+import { IoSearch } from 'react-icons/io5';
 import NearByTours from './NearByTours';
 import SelectGroupSize from './SelectGroupSize';
 import SelectTourDate from './SelectTourDate';
@@ -9,13 +10,14 @@ import {
   setTourGroupSize,
   setGetNearbyTours,
 } from '../../redux/slices/filterToursSlice';
-import { isMobile } from 'react-device-detect';
+import { RootState } from '../../app/store';
+
 const FindTours = () => {
   const {
     tourStartDate: tourDateFilter,
     tourGroupSize: groupSizeFilter,
     getNearbyTours,
-  } = useSelector((state) => state.filterToursQueryString);
+  } = useSelector((state: RootState) => state.filterToursQueryString);
 
   const [tourDate, setTourDate] = useState<string>(tourDateFilter);
   const [groupSize, setGroupSize] = useState<number>(groupSizeFilter);
@@ -25,7 +27,7 @@ const FindTours = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (coords) {
+    if (coords && coords.length === 2) {
       const [longitude, latitude] = coords;
       (async () => {
         const response = await fetch(
@@ -36,8 +38,11 @@ const FindTours = () => {
 
         setUserLocationName(data.features[0].place_name);
       })();
-    } else setUserLocationName('');
-  }, [coords, getNearbyTours]);
+    } else {
+      dispatch(setGetNearbyTours(null));
+      setUserLocationName('');
+    }
+  }, [coords, dispatch, getNearbyTours]);
 
   const handleSearch = () => {
     dispatch(setGetNearbyTours(coords));
@@ -45,20 +50,31 @@ const FindTours = () => {
     dispatch(setTourGroupSize(groupSize));
   };
 
+  // Resetting states in redux won't reflect in child props else!
+  useEffect(() => {
+    setGroupSize(groupSizeFilter);
+    setTourDate(tourDateFilter);
+  }, [groupSizeFilter, tourDateFilter]);
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center w-full gap-8 pt-8">
+      <div className="grid sm:grid-cols-2 md:grid-cols-[1fr_1fr_1fr_200px] w-full items-center justify-items-center sm:gap-6 gap-3 p-2">
         <NearByTours setCoords={setCoords} />
         <SelectGroupSize groupSize={groupSize} setGroupSize={setGroupSize} />
         <SelectTourDate tourDate={tourDate} setTourDate={setTourDate} />
-        <div className="flex items-baseline gap-2">
-          <Button size="lg" color="primary" className="rounded-full" onClick={handleSearch}>
-            Search Tours
+        <div className="flex items-baseline gap-2 w-full">
+          <Button
+            size="lg"
+            className=" rounded-full py-5 bg-gradient-to-r from-slate-900 to-slate-600 shadow-xl text-white w-full sm:w-full"
+            onClick={handleSearch}
+          >
+            <IoSearch size={20} />
+            <span className="-ml-2 text-md"> Search Tours</span>
           </Button>
         </div>
       </div>
       {userLocationName && (
-        <div className="">
+        <div className="ml-3 -mt-4">
           <p className="text-[10px] rounded-full text-slate-400">
             Detected location: {userLocationName}
           </p>
