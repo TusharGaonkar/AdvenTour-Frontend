@@ -1,10 +1,11 @@
-import { Chip, Divider, Spinner } from '@nextui-org/react';
+import { Chip, Divider, Skeleton, Spinner } from '@nextui-org/react';
 import { useParams } from 'react-router-dom';
 import { DayPicker } from 'react-day-picker';
+import { useEffect } from 'react';
 import { format, parseISO } from 'date-fns';
+import toast from 'react-hot-toast';
 import RenderTourImages from '../TourDetails/RenderTourImages';
 import TourDescription from '../TourDetails/TourDescription';
-import TourTitle from '../TourDetails/TourTitle';
 import TourDetailedInfo from '../TourDetails/TourDetailedInfo';
 import TourQuickInfo from '../TourDetails/TourQuickInfo';
 import Itinerary from '../TourDetails/Itinerary';
@@ -14,15 +15,32 @@ import { AcceptTourModal, RejectTourModal } from './AdminTourVerifyModal';
 
 const AdminTourPreview = () => {
   const { id } = useParams();
-  const { data: tourData, status } = useGetTourForAdminWithIDQuery(id);
+  const { data: tourData, status, isError } = useGetTourForAdminWithIDQuery(id);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error('Something went wrong...', {
+        className: 'text-xs font-medium',
+      });
+    }
+  }, [isError]);
 
   const tourDates = tourData?.data?.tour?.tourStartDates?.map((date) => new Date(date));
   return (
     <div className="flex flex-col max-w-6xl mx-auto gap-7">
       {status === 'fulfilled' && tourData.totalResults === 1 ? (
         <>
-          <div className="flex items-start justify-between">
-            <TourTitle tour={tourData?.data?.tour} />
+          <div className="flex items-start justify-between p-2">
+            <div className="break-all">
+              <Skeleton isLoaded={status === 'fulfilled'}>
+                <p className="text-xl sm:text-3xl font-semibold">
+                  {tourData?.data?.tour?.title || 'No Title'}
+                </p>
+                <p className="text-sm underline text-slate-400">{`By ${
+                  tourData?.data?.tour?.adminName || 'No Name'
+                }`}</p>
+              </Skeleton>
+            </div>
             <div className="self-end flex gap-3 items-center">
               {tourData.data.tour.isVerified === false ? (
                 <>
