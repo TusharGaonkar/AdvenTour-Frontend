@@ -2,6 +2,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Button, Chip, Divider } from '@nextui-org/react';
+import React from 'react';
 import toast from 'react-hot-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -17,7 +18,6 @@ import {
   type ContributeTourFormSchemaType,
 } from '../../validators/ContributeTourFormValidator';
 import { useUploadNewTourMutation } from '../../redux/slices/contributeNewTourSlice';
-import { useEffect } from 'react';
 
 const items = [
   {
@@ -38,7 +38,11 @@ const items = [
   },
 ];
 
-const ContributeMultiStepForm = () => {
+const ContributeMultiStepForm = ({
+  setStatus,
+}: {
+  setStatus: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const methods = useForm<ContributeTourFormSchemaType>({
     resolver: zodResolver(contributeTourFormSchema),
     defaultValues: {
@@ -60,13 +64,7 @@ const ContributeMultiStepForm = () => {
     mode: 'onChange',
   });
 
-  const [uploadNewTour, { data }] = useUploadNewTourMutation();
-
-  useEffect(() => {
-    if (data) {
-      console.log(data);
-    }
-  }, [data]);
+  const [uploadNewTour] = useUploadNewTourMutation();
 
   const {
     register,
@@ -85,23 +83,26 @@ const ContributeMultiStepForm = () => {
     tourData: Omit<ContributeTourFormSchemaType, 'whatsIncluded' | 'whatsNotIncluded'> & {
       whatsIncluded: string[];
       whatsNotIncluded: string[];
+      jsonTourData: string;
     }
   ) => {
-    console.log(tourData);
-    tourData.jsonTourData = JSON.stringify(tourData);
-    const serializedTourData = serialize(tourData, {
-      indices: true,
-    });
+    const toastID = toast.loading('Uploading tour...', { className: 'text-xs font-medium' });
+    try {
+      setStatus(true);
+      tourData.jsonTourData = JSON.stringify(tourData);
+      const serializedTourData = serialize(tourData, {
+        indices: true,
+      });
 
-    toast.promise(
-      uploadNewTour(serializedTourData),
-      {
-        loading: 'Uploading tour...',
-        success: 'Tour uploaded successfully',
-        error: 'Error while uploading tour please try again...',
-      },
-      { className: 'text-xs font-medium' }
-    );
+      await uploadNewTour(serializedTourData);
+    } catch (error) {
+      toast.error('Something went wrong while uploading the tour', {
+        className: 'text-xs font-medium',
+      });
+    } finally {
+      toast.dismiss(toastID);
+      setStatus(false);
+    }
   };
 
   const handleContributeFormSubmission = () => {
@@ -125,11 +126,7 @@ const ContributeMultiStepForm = () => {
     const validate = contributeTourFormSchema.safeParse(transformedFormData);
 
     if (!validate.success) {
-      validate.error?.errors?.forEach((error) => {
-        toast.error(error.message, {
-          className: 'text-xs font-medium',
-        });
-      });
+      toast.error('Please fill all the required fields...', { className: 'text-xs font-medium' });
     } else {
       transformedFormData.whatsIncluded = whatsIncluded;
       transformedFormData.whatsNotIncluded = whatsNotIncluded;
@@ -139,30 +136,30 @@ const ContributeMultiStepForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full min-w-full gap-6 mx-auto">
-      <div className="flex items-center w-full justify-evenly">
+    <div className="flex flex-col gap-6 p-3 mb-20 -mt-6 md:mt-0">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         {items.map(({ label }, index) => (
           <div className="flex items-center" key={label}>
             <Chip
               variant="shadow"
               color={activeIndex === index ? 'danger' : 'default'}
-              className="cursor-pointer"
+              className="cursor-pointer text-center md:min-w-[195px] min-w-full"
               onClick={() => jumpToIndex(index)}
               size="lg"
             >
               {label}
             </Chip>
-            {index !== items.length - 1 && <Divider key={label} />}
+            {index !== items.length - 1 && <Divider key={label} className="hidden md:block" />}
           </div>
         ))}
       </div>
 
       <FormProvider {...methods}>
-        <form className="flex flex-col w-full gap-5 p-4">
+        <form className="flex flex-col w-full gap-5">
           <activeItem.content register={register} errors={errors} getValues={getValues} />
         </form>
       </FormProvider>
-      <div className="flex justify-end min-w-full gap-3 mb-8">
+      <div className="flex justify-end min-w-full gap-3">
         <Button onClick={handlePrev} disabled={isStart}>
           Previous
         </Button>
