@@ -25,6 +25,7 @@ export const reAuthenticate = createAsyncThunk(
   async (): Promise<unknown> => {
     const response = await fetch('http://localhost:2000/api/v-1.0/auth/verifyToken', {
       credentials: 'include',
+      cache: 'no-store',
     });
 
     if (response.ok) {
