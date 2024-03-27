@@ -1,10 +1,11 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import AdminNavigation from '../features/AdventourAdminPage/AdminNav';
 import { useSelector } from 'react-redux';
+import AdminNavigation from '../features/AdventourAdminPage/AdminNav';
 import CustomAdminMobileNavigation from '../common/CustomAdminMobileNavigation';
+import { RootState } from '../app/store';
 
 const AdminLayout = () => {
-  const { isLoggedIn, user } = useSelector((state: any) => state.userInfo);
+  const { isLoggedIn, user } = useSelector((state: RootState) => state.userInfo);
 
   if (!isLoggedIn || user?.role !== 'admin') {
     return <Navigate to="/admin/login" replace />;
