@@ -76,7 +76,15 @@ const NavBar = () => {
               <SearchBar />
             </NavbarItem>
             <NavbarItem key="user-profile" className="lg:hidden mt-1">
-              <UserDropDown userName={user?.userName} userRole={user?.role} avatar={user?.avatar} />
+              {isLoggedIn ? (
+                <UserDropDown
+                  userName={user?.userName}
+                  userRole={user?.role}
+                  avatar={user?.avatar}
+                />
+              ) : (
+                <NavLink to="/login">Login</NavLink>
+              )}
             </NavbarItem>
           </div>
         )}
