@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 // Custom implementation of debounce hook based on use cases of Adventour for search query
 
 import { useEffect, useRef } from 'react';
 
-const useDebounce = <T extends (...args: any[]) => any>(callbackFn: T, delay: number) => {
+function useDebounce<T extends (...args: any[]) => any>(callbackFn: T, delay: number) {
   const timerIDRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // eslint-disable-next-line arrow-body-style
@@ -13,12 +14,14 @@ const useDebounce = <T extends (...args: any[]) => any>(callbackFn: T, delay: nu
     };
   }, []);
 
-  return (...args: Parameters<T>) => {
+  // eslint-disable-next-line func-names
+  return function (...args: Parameters<T>) {
+    const context = this;
     if (timerIDRef.current) clearTimeout(timerIDRef.current);
     timerIDRef.current = setTimeout(() => {
-      callbackFn.apply(this, args); // keep the context of this
+      callbackFn.apply(context, args); // keep the context of this
     }, delay);
   };
-};
+}
 
 export default useDebounce;
