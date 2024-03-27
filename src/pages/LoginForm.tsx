@@ -113,6 +113,7 @@ const LoginForm = () => {
     useLoginUserMutation();
 
   const { isLoggedIn } = useSelector((state: RootState) => state.userInfo);
+
   const dispatch = useDispatch();
 
   const {
@@ -124,6 +125,7 @@ const LoginForm = () => {
   });
 
   const navigate = useNavigate();
+
   const onSubmit: SubmitHandler<LoginFormSchemaType> = (formData: LoginFormSchemaType) => {
     loginUser(formData);
   };
@@ -235,7 +237,10 @@ const LoginForm = () => {
                   <span>Facebook</span>
                 </div>
               </button>
-              <button className="w-full p-3 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white">
+              <a
+                href="http://localhost:2000/api/v-1.0/auth/google"
+                className="w-full p-3 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white"
+              >
                 <div className="flex flex-row items-center justify-center space-x-3">
                   <img
                     src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-google-icon-logo-png-transparent-svg-vector-bie-supply-14.png"
@@ -244,7 +249,7 @@ const LoginForm = () => {
                   />
                   <span>Google</span>
                 </div>
-              </button>
+              </a>
             </div>
           </div>
         </div>
