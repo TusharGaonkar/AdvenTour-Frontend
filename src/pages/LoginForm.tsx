@@ -94,7 +94,7 @@ const ResetEmailModal = ({
                   onClose();
                   requestPasswordReset();
                 }}
-                className="bg-black text-white"
+                className="text-white bg-black"
               >
                 Reset Password
               </Button>
@@ -167,8 +167,8 @@ const LoginForm = () => {
         color="danger"
         className="fixed top-0 w-screen "
       />
-      <div className="items-start justify-between p-12 md:flex md:flex-col max-w-[485px]">
-        <div className="flex flex-col items-start gap-12">
+      <div className="items-start justify-between p-12 md:flex md:flex-col max-w-[485px] max-h-[90vh]">
+        <div className="flex flex-col items-start gap-10">
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold">Welcome back</h1>
           </div>
@@ -205,7 +205,7 @@ const LoginForm = () => {
             <div className="flex flex-col">
               <Button
                 variant="light"
-                className="self-center text-blue-500 font-semibold"
+                className="self-center font-semibold text-blue-500"
                 onPress={onOpenChange}
               >
                 Forgot Password?
@@ -226,26 +226,16 @@ const LoginForm = () => {
             <div className="w-full h-[0.3px] bg-slate-500" />
 
             <h2 className="mt-2 text-xs text-center text-slate-700"> Or login with</h2>
-            <div className="flex flex-col mt-6 space-y-3 md:flex-row md:space-y-0 md:space-x-3">
-              <button className="w-full p-3 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white">
-                <div className="flex flex-row items-center justify-center space-x-3">
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png"
-                    alt=""
-                    className="object-cover w-10"
-                  />
-                  <span>Facebook</span>
-                </div>
-              </button>
+            <div className="flex flex-col mt-4 space-y-1 md:flex-row md:space-y-0 md:space-x-3">
               <a
                 href="http://localhost:2000/api/v-1.0/auth/google"
-                className="w-full p-3 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white"
+                className="w-full p-4 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white"
               >
-                <div className="flex flex-row items-center justify-center space-x-3">
+                <div className="flex flex-row items-center justify-center gap-2">
                   <img
-                    src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-google-icon-logo-png-transparent-svg-vector-bie-supply-14.png"
-                    alt=""
+                    src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
                     className="object-cover w-10"
+                    alt="google-logo"
                   />
                   <span>Google</span>
                 </div>
@@ -255,7 +245,7 @@ const LoginForm = () => {
         </div>
       </div>
 
-      <div className="md:flex md:flex-col md:justify-center md:items-center md:p-4 md:mt-6 bg-black w-[30rem] hidden md:rounded-lg">
+      <div className="md:flex max-h-[95vh] md:flex-col md:justify-center md:items-center md:p-4 md:mt-6 bg-black w-[30rem] hidden md:rounded-lg">
         <img
           src={coolBoy}
           alt="cool boy"

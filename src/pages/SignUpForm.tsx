@@ -57,7 +57,7 @@ const SignupForm = () => {
         className="fixed top-0 w-screen"
       />
       <div className="items-start justify-between p-12 md:flex md:flex-col">
-        <div className="flex flex-col items-start gap-12">
+        <div className="flex flex-col items-start gap-8">
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold">Register to AdvenTour</h1>
           </div>
@@ -120,26 +120,19 @@ const SignupForm = () => {
               Or sign up with
             </h2>
             <div className="flex flex-col mt-6 space-y-3 md:flex-row md:space-y-0 md:space-x-3">
-              <button className="w-full p-3 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white">
-                <div className="flex flex-row items-center justify-center space-x-3">
+              <a
+                href="http://localhost:2000/api/v-1.0/auth/google"
+                className="w-full p-4 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white"
+              >
+                <div className="flex flex-row items-center justify-center gap-2">
                   <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png"
-                    alt=""
+                    src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
                     className="object-cover w-10"
-                  />
-                  <span>Facebook</span>
-                </div>
-              </button>
-              <button className="w-full p-3 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white">
-                <div className="flex flex-row items-center justify-center space-x-3">
-                  <img
-                    src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-google-icon-logo-png-transparent-svg-vector-bie-supply-14.png"
-                    alt=""
-                    className="object-cover w-10"
+                    alt="google-logo"
                   />
                   <span>Google</span>
                 </div>
-              </button>
+              </a>
             </div>
           </div>
         </div>
