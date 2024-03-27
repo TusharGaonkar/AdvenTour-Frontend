@@ -8,7 +8,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { setSearchToursString } from '../../redux/slices/filterToursSlice';
 import { useGetSuggestionsQuery } from '../../redux/slices/autocompleteSlice';
 
-function flattenSuggestions(suggestions: Record<string, any>[]) {
+const flattenSuggestions = (suggestions: Record<string, any>[]) => {
   const result = suggestions.map(({ highlights }) => {
     const typeHit = highlights.map(({ texts }: { texts: Record<string, any>[] }) => {
       const temp = texts.filter(({ type }) => type === 'hit');
@@ -20,7 +20,7 @@ function flattenSuggestions(suggestions: Record<string, any>[]) {
   });
 
   return result.flat(2);
-}
+};
 
 const SearchBar = () => {
   const dispatch = useDispatch();
@@ -81,11 +81,12 @@ const SearchBar = () => {
   }, []);
 
   return (
-    <div className="relative" ref={searchDivRef}>
+    <div className="relative rounded-full w-full" ref={searchDivRef}>
       <Input
         type="search"
         size="sm"
         placeholder="Search places to go"
+        radius="full"
         value={inputValue}
         onChange={(event) => {
           setInputValue(event.target.value);
