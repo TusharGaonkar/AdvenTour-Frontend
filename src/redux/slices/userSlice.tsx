@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import toast from 'react-hot-toast';
 
 type UserSliceInitialStateType = {
   user: {
@@ -35,6 +36,24 @@ export const reAuthenticate = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk('userInfo/logoutUser', async (): Promise<unknown> => {
+  const toastID = toast.loading('Logging out user...', { className: 'text-xs font-medium' });
+  const response = await fetch('http://localhost:2000/api/v-1.0/auth/logout', {
+    credentials: 'include',
+    method: 'POST',
+  });
+
+  toast.dismiss(toastID);
+  if (response.ok) {
+    toast.success('Logged out successfully', { className: 'text-xs font-medium' });
+    const data = await response.json();
+    return data;
+  }
+
+  toast.error('Failed to logout user', { className: 'text-xs font-medium' });
+  throw new Error('Something went wrong while logging out user...');
+});
+
 const userSlice = createSlice({
   name: 'userInfo',
   initialState: userSliceInitialState,
@@ -44,12 +63,6 @@ const userSlice = createSlice({
       state.user = { ...user };
       state.token = token;
       state.isLoggedIn = true;
-    },
-
-    logoutUser: (state) => {
-      state.user = null;
-      state.token = null;
-      state.isLoggedIn = false;
     },
   },
 
@@ -66,9 +79,15 @@ const userSlice = createSlice({
         state.user = null;
         state.token = null;
         state.isLoggedIn = false;
+      })
+
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.token = null;
+        state.isLoggedIn = false;
       });
   },
 });
 
-export const { logoutUser, setCredentials } = userSlice.actions;
+export const { setCredentials } = userSlice.actions;
 export default userSlice;
