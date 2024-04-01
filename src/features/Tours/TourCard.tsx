@@ -3,7 +3,7 @@ import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import StarRatings from 'react-star-ratings';
 import toast from 'react-hot-toast';
-import { useEffect, useState } from 'react';
+import { ForwardedRef, forwardRef, useEffect, useState } from 'react';
 import getDistance from 'geolib/es/getDistance';
 import { useSelector } from 'react-redux';
 import formatToINR from '../../utils/currencyFormatter';
@@ -13,7 +13,10 @@ import {
 } from '../../redux/slices/bookmarkTourSlice';
 import CustomProgressiveImage from '../../common/CustomProgressiveImage';
 
-const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
+function TourCardWithRef(
+  { tour }: { tour: Record<string, unknown> },
+  ref: ForwardedRef<HTMLDivElement>
+) {
   const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState<boolean>(
     () => (tour?.isBookmarked as boolean) || false
@@ -91,16 +94,20 @@ const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
   };
 
   return (
-    <div className="sm:rounded-tl-xl sm:rounded-bl-xl sm:grid sm:grid-cols-6 sm:grid-rows-6 sm:w-full sm:h-[225px] bg-secondary sm:items-start sm:space-x-2 sm:space-y-3 sm:p-2 block p-2">
+    //  expose this div as a ref to the parent component
+    <div
+      className="sm:rounded-tl-xl sm:rounded-bl-xl sm:grid sm:grid-cols-6 sm:grid-rows-6 sm:w-full sm:h-[225px] bg-secondary sm:items-start sm:space-x-2 sm:space-y-3 sm:p-2 block p-2"
+      ref={ref}
+    >
       <CustomProgressiveImage
         src={tour.mainCoverImage as string}
         alt="tour-main-cover"
-        className="object-cover w-full sm:h-full col-span-2 row-span-full sm:rounded-tl-xl sm:rounded-bl-xl rounded-xl"
+        className="object-cover w-full col-span-2 sm:h-full row-span-full sm:rounded-tl-xl sm:rounded-bl-xl rounded-xl"
       />
 
-      <div className="flex flex-col gap-1 p-2 sm:col-span-3 w-full h-full">
-        <p className="lg:text-lg sm:text-xl font-semibold">{tour.title}</p>
-        <p className="sm:text-sm text-xs text-slate-600 ">{tour?.tourLocation?.address}</p>
+      <div className="flex flex-col w-full h-full gap-1 p-2 sm:col-span-3">
+        <p className="font-semibold lg:text-lg sm:text-xl">{tour.title}</p>
+        <p className="text-xs sm:text-sm text-slate-600 ">{tour?.tourLocation?.address}</p>
         {getNearbyTours && (
           <Chip size="sm" variant="flat" className="break-words">
             {`Around ${(distanceFromUser / 1000).toFixed(2).toLocaleString()} kms away from you`}
@@ -124,11 +131,11 @@ const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
           </p>
         </div>
       </div>
-      <div className="p-1 sm:text-white break-words sm:bg-neutral/90 flex flex-row gap-1 lg:gap-0 md:items-start items-center md:flex-col rounded-tl-xl rounded-bl-xl col-start-6 sm:row-start-1">
+      <div className="flex flex-row items-center col-start-6 gap-1 p-1 break-words sm:text-white sm:bg-neutral/90 lg:gap-0 md:items-start md:flex-col rounded-tl-xl rounded-bl-xl sm:row-start-1">
         <p className="text-sm">starting from</p>
-        <p className="lg:text-xl font-semibold">{`${formatToINR(tour.priceInRupees)}/-`}</p>
+        <p className="font-semibold lg:text-xl">{`${formatToINR(tour.priceInRupees)}/-`}</p>
       </div>
-      <div className="flex flex-row items-center p-1 sm:col-span-3 sm:col-start-3 sm:row-start-5 sm:gap-3 gap-2">
+      <div className="flex flex-row items-center gap-2 p-1 sm:col-span-3 sm:col-start-3 sm:row-start-5 sm:gap-3">
         <Button
           className="flex items-center bg-transparent rounded-md border-1.5"
           onClick={handleClickOnBookmark}
@@ -149,6 +156,8 @@ const TourCard = ({ tour }: { tour: Record<string, unknown> }) => {
       </div>
     </div>
   );
-};
+}
+
+const TourCard = forwardRef(TourCardWithRef);
 
 export default TourCard;
