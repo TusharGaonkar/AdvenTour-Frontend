@@ -56,15 +56,11 @@ class AdventourApiClientQuery implements IAdventourApiQueryClientQuery {
 
   addDurationQuery() {
     const selectedDays = Object.entries(this.queryObj.tourDurationInDays as Record<string, boolean>)
-      .filter(([day, isSelected]) => isSelected && day !== '4')
+      .filter(([day, isSelected]) => isSelected)
       .map(([day]) => day);
 
     if (selectedDays.length > 0) {
       this.query.push(`tourDurationInDays[in]=${selectedDays.join(',')}`);
-    }
-
-    if ((this.queryObj.tourDurationInDays as Record<string, boolean>)['4']) {
-      this.query.push('tourDurationInDays[gte]=4');
     }
 
     return this;
