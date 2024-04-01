@@ -1,10 +1,16 @@
 import apiSlice from './apiSlice';
 
+type GetAllToursQueryType = {
+  page: number;
+  limit: number;
+  queryString: string;
+};
+
 const getToursSlice = apiSlice.injectEndpoints({
   endpoints: (build) => ({
-    getAllTours: build.query<Record<string, unknown>, string>({
-      query: (queryString = '') => ({
-        url: `/tours?${queryString}`,
+    getAllTours: build.query<unknown, GetAllToursQueryType>({
+      query: ({ queryString = '', page = 1, limit = 6 }) => ({
+        url: `/tours?${queryString}&page=${page}&limit=${limit}`,
         method: 'GET',
       }),
 
