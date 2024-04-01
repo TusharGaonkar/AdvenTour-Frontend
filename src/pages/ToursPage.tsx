@@ -50,13 +50,23 @@ const ToursPage = () => {
     [filters]
   );
 
-  const [queryString, setQueryString] = useState(getQueryString || '');
-  const [toursData, { page, isLoading, isSuccess, isError, error, handleScrollToBottom }] =
-    useInfiniteToursScroll(queryString);
+  const [
+    toursData,
+    {
+      page,
+      isSuccess,
+      isLoading,
+      isFetching,
+      isError,
+      error,
+      noResultsFound,
+      handleScrollToBottom,
+    },
+  ] = useInfiniteToursScroll(getQueryString());
 
   const dispatch = useDispatch();
 
-  useEffect(() => console.log(queryString));
+  useEffect(() => console.log(getQueryString()), [getQueryString]);
 
   useEffect(() => {
     if (isError) {
@@ -65,12 +75,6 @@ const ToursPage = () => {
       });
     }
   }, [error?.data?.message, isError]);
-
-  useEffect(() => {
-    if (filters) {
-      setQueryString(getQueryString);
-    }
-  }, [getQueryString, filters]);
 
   return (
     <>
@@ -87,24 +91,23 @@ const ToursPage = () => {
         <div className="flex flex-col lg:flex-row">
           <Filters />
           <div className="flex flex-col w-full h-full gap-6 mt-4">
-            {isLoading && !isSuccess && <RenderTourSkeleton count={3} />}
-            {isSuccess &&
-              toursData?.map(
-                (
-                  tour: Record<string, unknown>,
-                  index: number,
-                  tours: Array<Record<string, unknown>>
-                ) => {
-                  if (index === tours.length - 1) {
-                    return (
-                      // if it's the last tour in the list forward the ref
-                      <TourCard key={tour._id as string} tour={tour} ref={handleScrollToBottom} />
-                    );
-                  }
-                  return <TourCard key={tour._id as string} tour={tour} />;
+            {toursData?.map(
+              (
+                tour: Record<string, unknown>,
+                index: number,
+                tours: Array<Record<string, unknown>>
+              ) => {
+                if (index === tours.length - 1) {
+                  return (
+                    // if it's the last tour in the list forward the ref
+                    <TourCard key={tour._id as string} tour={tour} ref={handleScrollToBottom} />
+                  );
                 }
-              )}
-            {isSuccess && page == 1 && toursData?.length === 0 && (
+                return <TourCard key={tour._id as string} tour={tour} />;
+              }
+            )}
+            {isFetching && <RenderTourSkeleton count={3} />}
+            {noResultsFound && !isFetching && (
               <div className="flex flex-col items-center justify-center w-full h-full gap-5 mx-auto ">
                 <img src={noResults} className="object-cover h-[300px] w-full" alt="no results" />
                 <p className="text-xs font-semibold text-slate-400">
