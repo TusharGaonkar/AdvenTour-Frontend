@@ -4,9 +4,11 @@ import { Input, Progress } from '@nextui-org/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaSearch } from 'react-icons/fa';
 import Highlighter from 'react-highlight-words';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { setSearchToursString } from '../../redux/slices/filterToursSlice';
+import { resetToursQueryString, setSearchToursString } from '../../redux/slices/filterToursSlice';
 import { useGetSuggestionsQuery } from '../../redux/slices/autocompleteSlice';
+import useDebounce from '../../hooks/useDebounce';
 import { RootState } from '../../app/store';
 
 const flattenSuggestions = (suggestions: Record<string, any>[]) => {
@@ -28,46 +30,54 @@ const flattenSuggestions = (suggestions: Record<string, any>[]) => {
 
 const SearchBar = () => {
   const dispatch = useDispatch();
-  const { searchToursString } = useSelector((state: RootState) => state.filterToursQueryString);
-  // on mount set search string as input value!
-  const [inputValue, setInputValue] = useState(() => searchToursString || '');
-  const { data: response, status } = useGetSuggestionsQuery(inputValue);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  // retrieve the previous search query between different page navigation
+  const previousSearchString = useSelector(
+    (state: RootState) => state.filterToursQueryString.searchToursString
+  );
+
+  const [inputValue, setInputValue] = useState(() => previousSearchString || '');
+  const [searchString, setSearchString] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const [isSelected, setIsSelected] = useState(false);
+
+  const { data: response, status } = useGetSuggestionsQuery(searchString);
+
   const searchDivRef = useRef<null | HTMLDivElement>(null);
   const suggestionRef = useRef<null | HTMLDivElement>(null);
 
   const handleSearch = useCallback(
-    (searchString: string) => {
-      dispatch(setSearchToursString(searchString));
+    (inputString: string) => {
+      dispatch(resetToursQueryString());
+      dispatch(setSearchToursString(inputString));
+      if (!pathname.includes('/tours')) navigate('/tours');
     },
-    [dispatch]
+    [dispatch, navigate, pathname]
   );
+
+  // Debounce the input change using custom hook implemented , delay of about 350 ms
+  const handleInputChange = useDebounce((event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSearchString(value);
+    if (suggestionRef.current) {
+      suggestionRef.current.style.display = 'block';
+    }
+  }, 350);
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setInputValue(suggestion);
+    handleSearch(suggestion);
+    if (suggestionRef.current) {
+      suggestionRef.current.style.display = 'none';
+    }
+  };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
       suggestionRef.current.style.display = 'none';
     }
   };
-
-  // debouncing implemented in search to prevent request throttling!!
-  useEffect(() => {
-    if (!isSelected && suggestionRef.current) {
-      suggestionRef.current.style.display = 'block';
-      const delay = 300;
-      const timer = setTimeout(() => {
-        handleSearch(inputValue);
-      }, delay);
-
-      return () => {
-        // caution will run on stale input values ,  remember to cleanup any previous timers
-        clearTimeout(timer);
-      };
-    }
-    if (suggestionRef.current) {
-      suggestionRef.current.style.display = 'none';
-    }
-  }, [inputValue, handleSearch, isSelected]);
 
   useEffect(() => {
     if (status === 'fulfilled') {
@@ -88,22 +98,24 @@ const SearchBar = () => {
   return (
     <div className="relative w-full rounded-full" ref={searchDivRef}>
       <Input
-        type="search"
+        type="text"
         size="sm"
         placeholder="Search places to go"
-        radius="full"
+        defaultValue={inputValue}
         value={inputValue}
+        radius="full"
         onChange={(event) => {
           setInputValue(event.target.value);
-          setIsSelected(false);
+          handleInputChange(event);
+        }}
+        onClear={() => {
+          setInputValue('');
+          handleSearch('');
         }}
         startContent={<FaSearch className="mr-2" />}
       />
 
-      <div
-        className="absolute hidden w-full mt-1 shadow-xl bg-secondary rounded-b-xl"
-        ref={suggestionRef}
-      >
+      <div className="absolute w-full mt-1 shadow-xl bg-secondary rounded-b-xl" ref={suggestionRef}>
         <Progress
           isIndeterminate={status === 'pending'}
           aria-label="progress"
@@ -122,10 +134,7 @@ const SearchBar = () => {
             <li
               className="px-3 py-4 truncate border-slate-300 border-b-1 last:border-none hover:bg-white last:rounded-b-xl "
               key={value}
-              onClick={() => {
-                setInputValue(value);
-                setIsSelected(true);
-              }}
+              onClick={() => handleSuggestionClick(value)}
             >
               <Highlighter
                 highlightClassName=" font-semibold bg-[#99FF99]/60"
