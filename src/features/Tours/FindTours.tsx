@@ -9,6 +9,7 @@ import {
   setTourStartDate,
   setTourGroupSize,
   setGetNearbyTours,
+  setSearchToursString,
 } from '../../redux/slices/filterToursSlice';
 import { RootState } from '../../app/store';
 
@@ -45,6 +46,8 @@ const FindTours = () => {
   }, [coords, dispatch, getNearbyTours]);
 
   const handleSearch = () => {
+    // remove any autosuggestion from the search bar
+    dispatch(setSearchToursString(''));
     dispatch(setGetNearbyTours(coords));
     dispatch(setTourStartDate(tourDate));
     dispatch(setTourGroupSize(groupSize));
