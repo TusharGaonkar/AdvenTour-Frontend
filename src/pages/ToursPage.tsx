@@ -79,7 +79,7 @@ const ToursPage = () => {
   return (
     <>
       <Progress
-        isIndeterminate={isLoading}
+        isIndeterminate={isFetching}
         className="w-full overflow-hidden"
         aria-label="progress"
         size="sm"
