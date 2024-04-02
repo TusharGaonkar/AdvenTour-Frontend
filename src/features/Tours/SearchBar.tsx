@@ -7,6 +7,7 @@ import Highlighter from 'react-highlight-words';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { setSearchToursString } from '../../redux/slices/filterToursSlice';
 import { useGetSuggestionsQuery } from '../../redux/slices/autocompleteSlice';
+import { RootState } from '../../app/store';
 
 const flattenSuggestions = (suggestions: Record<string, any>[]) => {
   const result = suggestions.map(({ highlights }) => {
@@ -19,13 +20,17 @@ const flattenSuggestions = (suggestions: Record<string, any>[]) => {
     return typeHit;
   });
 
-  return result.flat(2);
+  const res = result.flat(2);
+  const uniqueSuggestions = [...new Set(res?.map((suggestion) => suggestion.value))];
+
+  return uniqueSuggestions;
 };
 
 const SearchBar = () => {
   const dispatch = useDispatch();
-  const { searchToursString } = useSelector((state) => state.filterToursQueryString);
-  const [inputValue, setInputValue] = useState(() => searchToursString || ''); // on mount set search string as input value!
+  const { searchToursString } = useSelector((state: RootState) => state.filterToursQueryString);
+  // on mount set search string as input value!
+  const [inputValue, setInputValue] = useState(() => searchToursString || '');
   const { data: response, status } = useGetSuggestionsQuery(inputValue);
   const [suggestions, setSuggestions] = useState([]);
   const [isSelected, setIsSelected] = useState(false);
@@ -81,7 +86,7 @@ const SearchBar = () => {
   }, []);
 
   return (
-    <div className="relative rounded-full w-full" ref={searchDivRef}>
+    <div className="relative w-full rounded-full" ref={searchDivRef}>
       <Input
         type="search"
         size="sm"
@@ -113,7 +118,7 @@ const SearchBar = () => {
         )}
 
         <ul className="w-full h-full cursor-pointer">
-          {flattenSuggestions(suggestions).map(({ value }) => (
+          {flattenSuggestions(suggestions).map((value) => (
             <li
               className="px-3 py-4 truncate border-slate-300 border-b-1 last:border-none hover:bg-white last:rounded-b-xl "
               key={value}
