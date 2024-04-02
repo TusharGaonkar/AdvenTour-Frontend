@@ -1,12 +1,12 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable @typescript-eslint/no-this-alias */
-// Custom implementation of debounce hook based on use cases of Adventour for search query
 
+// Custom implementation of debounce hook based on use cases of Adventour for search query
 import { useEffect, useRef } from 'react';
 
 function useDebounce<T extends (...args: any[]) => any>(callbackFn: T, delay: number) {
   const timerIDRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  // eslint-disable-next-line arrow-body-style
   useEffect(() => {
     return () => {
       clearTimeout(timerIDRef.current);
