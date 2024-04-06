@@ -80,10 +80,10 @@ export const AcceptTourModal = ({ tourID }: { tourID: string | undefined }) => {
 
   return (
     <>
-      <Button onPress={onOpen} className="rounded-full bg-blue-500 text-white">
+      <Button onPress={onOpen} className="text-white bg-green-600 rounded-full">
         Accept submission
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center" size="4xl">
         <ModalContent>
           {(onClose) => (
             <>
@@ -164,7 +164,7 @@ export const RejectTourModal = ({ tourID }: { tourID: string | undefined }) => {
 
   return (
     <>
-      <Button className="rounded-full bg-red-500 text-white" onPress={onOpen} variant="flat">
+      <Button className="text-white bg-red-500 rounded-full" onPress={onOpen} variant="flat">
         Reject tour
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
@@ -186,7 +186,7 @@ export const RejectTourModal = ({ tourID }: { tourID: string | undefined }) => {
                   Cancel
                 </Button>
                 <Button
-                  className="bg-red-600 text-white disabled:cursor-not-allowed disabled:bg-red-300"
+                  className="text-white bg-red-600 disabled:cursor-not-allowed disabled:bg-red-300"
                   onClick={() => handleSubmit()}
                   disabled={!isVerified}
                 >

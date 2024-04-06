@@ -2,7 +2,6 @@
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from '@nextui-org/react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import logo from '/advenTourLogo.png';
-import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { useLogoutUserMutation } from '../../redux/slices/authSlice';
 import { logoutUser } from '../../redux/slices/userSlice';
@@ -29,35 +28,27 @@ export default function AdminNavbar() {
 
   const [logout] = useLogoutUserMutation();
   const handleLogout = async () => {
-    const toastID = toast.loading('Logging out user...', { className: 'text-xs font-medium' });
-    try {
-      const response = await logout();
-      if (!response || response?.error) {
-        throw new Error('Failed to logout user');
-      }
-      dispatch(logoutUser());
-      toast.dismiss(toastID);
-      toast.success('Logged out successfully', { className: 'text-xs font-medium' });
-      navigate('/admin/login');
-    } catch (error) {
-      toast.error(error?.message || 'Failed to logout user', { className: 'text-xs font-medium' });
-    } finally {
-      toast.dismiss(toastID);
+    const response = await logout();
+    if (!response || response?.error) {
+      throw new Error('Failed to logout user');
     }
+    dispatch(logoutUser());
+    navigate('/admin/login');
   };
+
   return (
-    <Navbar className="bg-secondary mb-6">
+    <Navbar className="mb-6 bg-secondary">
       <NavbarBrand>
         <p className="font-bold text-inherit">
           <NavLink to="/admin">
             <div className="flex items-center justify-end gap-1 p-1">
               <img className="h-[45px] rounded-full bg-[#c8ffb8]" src={logo} alt="logo" />
-              <span className="text-medium font-bold text-slate-700">AdvenTour</span>
+              <span className="font-bold text-medium text-slate-700">AdvenTour</span>
             </div>
           </NavLink>
         </p>
       </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+      <NavbarContent className="hidden gap-4 sm:flex" justify="center">
         {items.map((item) => (
           <NavbarItem key={item.label} isActive={pathname === item.link}>
             <NavLink to={item.link}>{item.label}</NavLink>
