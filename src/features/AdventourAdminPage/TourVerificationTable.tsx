@@ -123,13 +123,13 @@ const TourVerificationTable = ({ refetchStats }) => {
           onSelectionChange={(key) => handleTabChange(key as 'verified' | 'unverified')}
         >
           <Tab key="verified" title="Verified Tours" />
-          <Tab key="unverified" title="Unverified Tours" />
+          <Tab key="unverified" title="New Tours" />
         </Tabs>
       </div>
       <Table
         aria-label="Tour validation table"
         bottomContent={
-          <div className="flex w-full justify-center">
+          <div className="flex justify-center w-full">
             <Pagination
               isCompact
               showControls
@@ -187,14 +187,14 @@ const TourVerificationTable = ({ refetchStats }) => {
                       }
                       variant="shadow"
                     >
-                      {tour.isAccepted === true ? 'Accepted' : 'Rejected'}
+                      {tour.isAccepted === true ? 'Accepted' : 'Not accepted'}
                     </Chip>
                   </div>
                 </TableCell>
                 <TableCell>
                   <Button
                     size="md"
-                    className="bg-black  text-white rounded-full"
+                    className="text-white bg-black rounded-full"
                     onClick={() => handleClick(tour._id)}
                   >
                     {tour.isVerified === true ? 'View Tour' : 'Approve Tour'}
