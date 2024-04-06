@@ -123,8 +123,11 @@ const ContributeMultiStepForm = ({
       FAQ: FAQList,
       itinerary: itineraryWithDates,
     };
+
+    console.log(transformedFormData);
     const validate = contributeTourFormSchema.safeParse(transformedFormData);
 
+    console.log(validate);
     if (!validate.success) {
       toast.error('Please fill all the required fields...', { className: 'text-xs font-medium' });
     } else {
@@ -137,7 +140,7 @@ const ContributeMultiStepForm = ({
 
   return (
     <div className="flex flex-col gap-6 p-3 mb-20 -mt-6 md:mt-0">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
         {items.map(({ label }, index) => (
           <div className="flex items-center" key={label}>
             <Chip
