@@ -42,7 +42,7 @@ const MainCover = () => {
           placeholder={`Try searching for "${searchItem}"`}
           startContent={<FaSearch className="mr-2" />}
           endContent={
-            <Button size="sm" className="bg-[#85d86b]/60">
+            <Button size="sm" className="bg-neutral/95">
               Search
             </Button>
           }
