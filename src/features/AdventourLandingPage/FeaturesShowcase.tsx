@@ -9,10 +9,12 @@ const FeaturesShowcase = () => (
       <div className="flex flex-col gap-4">
         <h2 className="p-6 text-2xl font-bold uppercase text-slate-600">
           Why choose
-          <span className="p-2 text-3xl font-bold text-sky-500 rounded-xl">AdvenTour?</span>
+          <span className="p-2 text-2xl md:text-3xl font-bold text-sky-500 rounded-xl">
+            AdvenTour?
+          </span>
         </h2>
 
-        <div className="grid grid-flow-col grid-cols-3 gap-4 p-10 mb-10">
+        <div className="grid md:grid-flow-col md:grid-cols-3 grid-cols-1 gap-4 p-10 mb-10">
           <div className="flex flex-col items-center gap-2 p-6 shadow-lg rounded-xl bg-gradient-to-r from-blue-100">
             <img src={man} height={100} width={100} className="object-cover" alt="man" />
             <Chip variant="shadow" className="uppercase bg-blue-600/40">
