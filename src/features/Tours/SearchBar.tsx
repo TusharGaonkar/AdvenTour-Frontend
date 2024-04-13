@@ -4,7 +4,7 @@ import { Input, Progress } from '@nextui-org/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaSearch } from 'react-icons/fa';
 import Highlighter from 'react-highlight-words';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { resetToursQueryString, setSearchToursString } from '../../redux/slices/filterToursSlice';
 import { useGetSuggestionsQuery } from '../../redux/slices/autocompleteSlice';
@@ -38,7 +38,11 @@ const SearchBar = () => {
     (state: RootState) => state.filterToursQueryString.searchToursString
   );
 
-  const [inputValue, setInputValue] = useState(() => previousSearchString || '');
+  const [searchParams] = useSearchParams();
+
+  const query = searchParams.get('query')?.trim() || '';
+
+  const [inputValue, setInputValue] = useState(() => previousSearchString || query);
   const [searchString, setSearchString] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
@@ -79,6 +83,11 @@ const SearchBar = () => {
     }
   };
 
+  const handleClearSearch = () => {
+    setInputValue('');
+    dispatch(resetToursQueryString());
+  };
+
   useEffect(() => {
     if (status === 'fulfilled') {
       setSuggestions(response?.data?.searchSuggestions || []);
@@ -109,8 +118,7 @@ const SearchBar = () => {
           handleInputChange(event);
         }}
         onClear={() => {
-          setInputValue('');
-          handleSearch('');
+          handleClearSearch();
         }}
         startContent={<FaSearch className="mr-2" />}
       />
