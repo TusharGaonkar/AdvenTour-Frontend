@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { Button, Progress } from '@nextui-org/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { MdAutoDelete } from 'react-icons/md';
 import toast from 'react-hot-toast';
 import NavBar from '../common/Navbar';
@@ -10,10 +10,11 @@ import Filters from '../features/Tours/Filters';
 import TourCard from '../features/Tours/TourCard';
 import noResults from '/noResults.gif';
 import AdventourApiClientQueryBuilder from '../utils/adventourApiQueryBuilder';
-import { resetToursQueryString } from '../redux/slices/filterToursSlice';
+import { resetToursQueryString, setSearchToursString } from '../redux/slices/filterToursSlice';
 import CustomMobileNavigation from '../common/CustomMobileNavigation';
 import { RootState } from '../app/store';
 import useInfiniteToursScroll from '../hooks/useInfiniteToursScroll';
+import { useSearchParams } from 'react-router-dom';
 
 const RenderTourSkeleton = ({ count }: { count: number }) => (
   <>
@@ -50,23 +51,20 @@ const ToursPage = () => {
     [filters]
   );
 
-  const [
-    toursData,
-    {
-      page,
-      isSuccess,
-      isLoading,
-      isFetching,
-      isError,
-      error,
-      noResultsFound,
-      handleScrollToBottom,
-    },
-  ] = useInfiniteToursScroll(getQueryString());
-
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
 
-  useEffect(() => console.log(getQueryString()), [getQueryString]);
+  useEffect(() => {
+    // get search string if redirected from the landing page
+    const query = searchParams.get('query')?.trim() || '';
+
+    if (query) {
+      dispatch(setSearchToursString(query));
+    }
+  }, [dispatch, searchParams]);
+
+  const [toursData, { isFetching, isError, error, noResultsFound, handleScrollToBottom }] =
+    useInfiniteToursScroll(getQueryString());
 
   useEffect(() => {
     if (isError) {
@@ -76,6 +74,13 @@ const ToursPage = () => {
     }
   }, [error?.data?.message, isError]);
 
+  // Reset the scroll on navigation from other pages
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
   return (
     <>
       <Progress
