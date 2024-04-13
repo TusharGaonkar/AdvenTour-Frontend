@@ -8,7 +8,7 @@ import coolGirl from '/3d-casual-life-happy-woman-makes-heart-shape-by-her-hand.
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegisterUserMutation } from '../redux/slices/authSlice';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,9 +25,26 @@ const SignupForm = () => {
   const [registerUser, { isLoading, isError, isSuccess, data: response, error }] =
     useRegisterUserMutation();
 
-  const onSubmit: SubmitHandler<SignUpFormSchemaType> = (formData: SignUpFormSchemaType) => {
-    registerUser(formData);
-  };
+  const onSubmit: SubmitHandler<SignUpFormSchemaType> = useCallback(
+    (formData: SignUpFormSchemaType) => {
+      registerUser(formData);
+    },
+    [registerUser]
+  );
+
+  useEffect(() => {
+    const callback = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        handleSubmit(onSubmit)();
+      }
+    };
+
+    window.addEventListener('keydown', callback);
+
+    return () => {
+      window.removeEventListener('keydown', callback);
+    };
+  }, [handleSubmit, onSubmit]);
 
   useEffect(() => {
     if (isError) {
@@ -121,7 +138,7 @@ const SignupForm = () => {
             </h2>
             <div className="flex flex-col mt-6 space-y-3 md:flex-row md:space-y-0 md:space-x-3">
               <a
-                href="http://localhost:2000/api/v-1.0/auth/google"
+                href="https://adventour.live/api/v-1.0/auth/google"
                 className="w-full p-4 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white"
               >
                 <div className="flex flex-row items-center justify-center gap-2">

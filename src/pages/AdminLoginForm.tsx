@@ -16,7 +16,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import coolAdmin from '/3d-casual-life-man-in-front-of-laptop-and-graph-on-web-browser-in-background(1).png';
 import loginFormSchema, { type LoginFormSchemaType } from '../validators/LoginFormValidator';
@@ -128,9 +128,12 @@ const AdminLoginForm = () => {
 
   const { isOpen, onOpenChange } = useDisclosure();
 
-  const onSubmit: SubmitHandler<LoginFormSchemaType> = (formData: LoginFormSchemaType) => {
-    loginAdmin(formData);
-  };
+  const onSubmit: SubmitHandler<LoginFormSchemaType> = useCallback(
+    (formData: LoginFormSchemaType) => {
+      loginAdmin(formData);
+    },
+    [loginAdmin]
+  );
 
   useEffect(() => {
     if (isError && error) {
@@ -159,8 +162,21 @@ const AdminLoginForm = () => {
     if (isLoggedIn && user?.role === 'admin') navigate(redirectURL, { replace: true });
   }, [navigate, isLoggedIn, user, redirectURL]);
 
+  useEffect(() => {
+    const callback = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        handleSubmit(onSubmit)();
+      }
+    };
+
+    window.addEventListener('keydown', callback);
+    return () => {
+      window.removeEventListener('keydown', callback);
+    };
+  }, [handleSubmit, onSubmit]);
+
   return (
-    <div className="flex flex-row justify-center bg-white rounded-lg bg-red p-7 md:flex-row">
+    <div className="flex flex-row justify-center bg-white rounded-lg bg-red p-7 md:flex-row mt-8">
       <Progress
         isIndeterminate={isLoading}
         size="sm"

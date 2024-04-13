@@ -16,7 +16,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import coolBoy from '/3d-casual-life-face-scan.png';
 import loginFormSchema, { type LoginFormSchemaType } from '../validators/LoginFormValidator';
@@ -126,9 +126,25 @@ const LoginForm = () => {
 
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<LoginFormSchemaType> = (formData: LoginFormSchemaType) => {
-    loginUser(formData);
-  };
+  const onSubmit: SubmitHandler<LoginFormSchemaType> = useCallback(
+    (formData: LoginFormSchemaType) => {
+      loginUser(formData);
+    },
+    [loginUser]
+  );
+
+  useEffect(() => {
+    const callback = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        handleSubmit(onSubmit)();
+      }
+    };
+    window.addEventListener('keydown', callback);
+
+    return () => {
+      window.removeEventListener('keydown', callback);
+    };
+  }, [handleSubmit, onSubmit]);
 
   useEffect(() => {
     if (isError && error) {
@@ -160,28 +176,27 @@ const LoginForm = () => {
   }, [navigate, isLoggedIn]);
 
   return (
-    <div className="flex flex-row justify-center bg-white rounded-lg bg-red p-7 md:flex-row">
+    <div className="flex flex-row justify-center items-stretch mt-10 bg-white bg-red p-7 md:flex-row">
       <Progress
         isIndeterminate={isLoading}
         size="sm"
         color="danger"
-        className="fixed top-0 w-screen "
+        className="fixed top-0 w-screen"
       />
-      <div className="items-start justify-between p-12 md:flex md:flex-col max-w-[485px] max-h-[90vh]">
+      <div className="items-start justify-between p-12 md:flex md:flex-col max-w-[485px]  bg-gradient-to-r from-slate-50 to-slate-100 rounded-l-xl shadow-xl">
         <div className="flex flex-col items-start gap-10">
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold">Welcome back</h1>
           </div>
           <p className="max-w-lg text-lg text-start">
-            Sign in to your account to view your bookings,if you are a new user please
+            Sign in to your AdvenTour account, if you are a new user please
             <span>
               <NavLink to="/register" className="self-center ml-1 font-semibold text-orange-400">
                 register here
               </NavLink>
             </span>
           </p>
-
-          <div className="flex flex-col w-full gap-6">
+          <div className="flex flex-col w-full  gap-6">
             <Input
               isClearable
               type="email"
@@ -228,8 +243,8 @@ const LoginForm = () => {
             <h2 className="mt-2 text-xs text-center text-slate-700"> Or login with</h2>
             <div className="flex flex-col mt-4 space-y-1 md:flex-row md:space-y-0 md:space-x-3">
               <a
-                href="http://localhost:2000/api/v-1.0/auth/google"
-                className="w-full p-4 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white"
+                href="https://adventour.live/api/v-1.0/auth/google"
+                className="w-full p-4 border border-gray-500 rounded-xl hover:ring-1 hover:ring-orange-300"
               >
                 <div className="flex flex-row items-center justify-center gap-2">
                   <img
@@ -245,11 +260,11 @@ const LoginForm = () => {
         </div>
       </div>
 
-      <div className="md:flex max-h-[95vh] md:flex-col md:justify-center md:items-center md:p-4 md:mt-6 bg-black w-[30rem] hidden md:rounded-lg">
+      <div className="md:flex md:flex-col md:justify-center md:items-center md:p-4  bg-black w-[30rem] hidden rounded-r-xl shadow-xl">
         <img
           src={coolBoy}
           alt="cool boy"
-          className="self-center hidden object-cover w-96 md:block"
+          className="self-center hidden object-cover w-96 md:block shadow-md"
         />
       </div>
 
