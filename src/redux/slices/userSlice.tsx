@@ -23,7 +23,7 @@ const userSliceInitialState: UserSliceInitialStateType = {
 export const reAuthenticate = createAsyncThunk(
   'userInfo/reAuthenticate',
   async (): Promise<unknown> => {
-    const response = await fetch('http://localhost:2000/api/v-1.0/auth/verifyToken', {
+    const response = await fetch(`${import.meta.env.VITE_ADVENTOUR_BACKEND_URL}/auth/verifyToken`, {
       credentials: 'include',
       cache: 'no-store',
     });
@@ -39,7 +39,7 @@ export const reAuthenticate = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk('userInfo/logoutUser', async (): Promise<unknown> => {
   const toastID = toast.loading('Logging out user...', { className: 'text-xs font-medium' });
-  const response = await fetch('http://localhost:2000/api/v-1.0/auth/logout', {
+  const response = await fetch(`${import.meta.env.VITE_ADVENTOUR_BACKEND_URL}/auth/logout`, {
     credentials: 'include',
     method: 'POST',
   });
