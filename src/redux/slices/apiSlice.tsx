@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
-const BASE_URL = 'https://adventour.live/api/v-1.0';
+const BASE_URL = import.meta.env.VITE_ADVENTOUR_BACKEND_URL;
 
 const baseQuery = fetchBaseQuery({ baseUrl: BASE_URL, credentials: 'include' }); // include credentials to allow cookies to be sent with requests
 

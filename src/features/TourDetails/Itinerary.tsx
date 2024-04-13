@@ -13,8 +13,7 @@ const Itinerary = ({ tour }: { tour: Record<string, unknown> }) => {
     latitude: tourLocation?.coordinates?.at(1) || 0,
     zoom: 13,
   });
-  const token =
-    'pk.eyJ1IjoidHVzaGFyZGciLCJhIjoiY2xwOGQxbmozMms3bzJrczRla2wzZDk1aiJ9.Gj3D87Qq2LxjfYlt-ARpxA';
+  const token = import.meta.env.VITE_MAPBOX_TOKEN;
 
   return (
     <>

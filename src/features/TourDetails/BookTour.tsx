@@ -46,9 +46,10 @@ const initiatePayment = async (
   try {
     if (!userEmail || !userName || !tourName) throw new Error('Please fill all the fields');
 
-    const getKeyResponse = await fetch('http://localhost:2000/api/v-1.0/bookings/getKeyID', {
+    const getKeyResponse = await fetch(import.meta.env.VITE_RAZORPAY_GETKEY_URL, {
       credentials: 'include',
     });
+
     if (!getKeyResponse.ok) {
       throw new Error('There was an issue with the payment gateway try again later...');
     }
@@ -64,7 +65,7 @@ const initiatePayment = async (
       peopleCount,
     };
 
-    const orderResponse = await fetch('http://localhost:2000/api/v-1.0/bookings/createOrder', {
+    const orderResponse = await fetch(import.meta.env.VITE_RAZORPAY_CREATE_ORDER_URL, {
       method: 'POST',
       body: JSON.stringify(bookingConfig),
       cache: 'no-store',
@@ -95,7 +96,7 @@ const initiatePayment = async (
       description: `Test payment for ${tourName} by ${userName}.`,
       image: tourImage,
       order_id: orderID,
-      callback_url: 'http://localhost:2000/api/v-1.0/bookings/verifyPayment',
+      callback_url: import.meta.env.VITE_RAZORPAY_CALLBACK_URL,
       redirect: false,
       prefill: {
         name: userName,
