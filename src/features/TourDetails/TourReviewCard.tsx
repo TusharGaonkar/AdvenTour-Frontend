@@ -16,7 +16,7 @@ type TourReviewCardProps = {
   title: string;
   userName: string;
   avatar: string;
-  description: string;
+  description?: string;
   rating: number;
   createdAt: Date;
   travelGroup: string;
@@ -28,19 +28,19 @@ const TourReviewCard = ({
   title,
   userName,
   avatar,
-  description,
+  description = '',
   rating,
   createdAt,
   travelGroup,
   reviewImages = [],
   isLoading,
 }: TourReviewCardProps) => {
-  if (!title || !userName || !description || !rating || !createdAt) {
+  if (!title || !userName || !rating || !createdAt) {
     return null;
   }
   const descriptionLengthLimit = 300;
   const [descriptionSliced, setDescriptionSliced] = useState(
-    description.slice(0, descriptionLengthLimit)
+    description?.slice(0, descriptionLengthLimit) || ''
   );
   const maxCharExceeded = description.length > descriptionLengthLimit;
   const [isReadMore, setIsReadMore] = useState<boolean>(maxCharExceeded);
