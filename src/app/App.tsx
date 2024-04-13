@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import { NextUIProvider } from '@nextui-org/react';
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -25,6 +26,7 @@ import PageNotFound from '../pages/PageNotFound';
 import BookingsPage from '../pages/BookingsPage';
 import GuideDashboard from '../pages/GuideDashboardPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
+import CheckAuthentication from '../common/CheckAuthentication';
 
 function App() {
   const isMobile = useMediaQuery({ query: '(max-width: 640px)' }); // consistent with tailwind breakpoint
@@ -42,10 +44,38 @@ function App() {
         <Route path="/register" element={<SignupForm />} />
         <Route path="/tours" element={<ToursPage />} />
         <Route path="/tours/:id" element={<TourDetailsPage />} />
-        <Route path="/bookmarks" element={<BookmarksPage />} />
-        <Route path="/bookings" element={<BookingsPage />} />
-        <Route path="/contribute" element={<ContributePage />} />
-        <Route path="/dashboard" element={<GuideDashboard />} />
+        <Route
+          path="/bookmarks"
+          element={
+            <CheckAuthentication title="Bookmarks">
+              <BookmarksPage />
+            </CheckAuthentication>
+          }
+        />
+        <Route
+          path="/bookings"
+          element={
+            <CheckAuthentication title="Bookings">
+              <BookingsPage />
+            </CheckAuthentication>
+          }
+        />
+        <Route
+          path="/contribute"
+          element={
+            <CheckAuthentication title="your contributions">
+              <ContributePage />
+            </CheckAuthentication>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <CheckAuthentication title="Guide Dashboard">
+              <GuideDashboard />
+            </CheckAuthentication>
+          }
+        />
         <Route path="/admin/login" element={<AdminLoginForm />} />
         <Route path="/resetPassword" element={<ResetPasswordPage />} />
         <Route element={<ProtectedAdminRoute />}>
