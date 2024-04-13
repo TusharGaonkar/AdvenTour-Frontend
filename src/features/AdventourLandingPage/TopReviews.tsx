@@ -1,88 +1,56 @@
 import Marquee from 'react-fast-marquee';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 import TourReviewCard from '../TourDetails/TourReviewCard';
+import { useTopReviewsQuery } from '../../redux/slices/landingPageSlice';
 
-const reviewData = {
-  _id: '65daf5bdece77be8bb54c88b',
-  tour: '65be2acef1a276eced58ebc0',
+type Review = {
+  _id: string;
+  tour: string;
   user: {
-    userName: 'Arjun',
-    avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026024d',
-  },
-  createdAt: '2024-02-25T08:09:33.573Z',
-  title: 'this is work i am sure ok',
-  rating: 4,
-  description: 'dfdfdfdffdfdfdfdfdfdfdfdfdffdfdfdfdfdfdfd',
-  travelGroup: 'Solo',
-  reviewImages: [],
-  __v: 0,
+    userName: string;
+    avatar: string;
+  };
+  createdAt: Date;
+  title: string;
+  rating: number;
+  description: string;
+  travelGroup: string;
 };
 
-const TopReviews = () => (
-  <section className="flex flex-col gap-1 p-6 mt-5 shadow-lg bg-gradient-to-r from-slate-50 to-slate-200 rounded-xl">
-    <h2 className="p-6 mb-2 text-3xl font-semibold text-slate-600">What Our Explorers Say</h2>
-    <Marquee gradient speed={30} direction="right">
-      <div className="mr-2">
-        <TourReviewCard
-          title={reviewData.title}
-          userName={reviewData.user.userName}
-          avatar={reviewData.user.avatar}
-          description={reviewData.description}
-          rating={reviewData.rating}
-          createdAt={reviewData.createdAt}
-          travelGroup={reviewData.travelGroup}
-          reviewImages={reviewData.reviewImages}
-        />
-      </div>
-      <div className="mr-2">
-        <TourReviewCard
-          title={reviewData.title}
-          userName={reviewData.user.userName}
-          avatar={reviewData.user.avatar}
-          description={reviewData.description}
-          rating={reviewData.rating}
-          createdAt={reviewData.createdAt}
-          travelGroup={reviewData.travelGroup}
-          reviewImages={reviewData.reviewImages}
-        />
-      </div>
-      <div className="mr-2">
-        <TourReviewCard
-          title={reviewData.title}
-          userName={reviewData.user.userName}
-          avatar={reviewData.user.avatar}
-          description={reviewData.description}
-          rating={reviewData.rating}
-          createdAt={reviewData.createdAt}
-          travelGroup={reviewData.travelGroup}
-          reviewImages={reviewData.reviewImages}
-        />
-      </div>
-      <div className="mr-2">
-        <TourReviewCard
-          title={reviewData.title}
-          userName={reviewData.user.userName}
-          avatar={reviewData.user.avatar}
-          description={reviewData.description}
-          rating={reviewData.rating}
-          createdAt={reviewData.createdAt}
-          travelGroup={reviewData.travelGroup}
-          reviewImages={reviewData.reviewImages}
-        />
-      </div>
-      <div className="mr-2">
-        <TourReviewCard
-          title={reviewData.title}
-          userName={reviewData.user.userName}
-          avatar={reviewData.user.avatar}
-          description={reviewData.description}
-          rating={reviewData.rating}
-          createdAt={reviewData.createdAt}
-          travelGroup={reviewData.travelGroup}
-          reviewImages={reviewData.reviewImages}
-        />
-      </div>
-    </Marquee>
-  </section>
-);
+const TopReviews = () => {
+  const { data, isLoading, isSuccess, isError, error } = useTopReviewsQuery({ limit: 10 });
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(error?.message || 'Something went wrong while fetching top reviews');
+    }
+  }, [isError, error]);
+
+  return (
+    isSuccess && (
+      <section className="flex flex-col gap-1 p-6 mt-5 shadow-lg bg-gradient-to-r from-slate-50 to-slate-200 rounded-xl">
+        <h2 className="p-6 mb-2 text-3xl lg:text-4xl font-semibold text-slate-600">
+          What Our Explorers Say
+        </h2>
+        <Marquee gradient speed={30} direction="right" pauseOnHover>
+          {data?.topReviews?.map((review: Review) => (
+            <div className="mr-2 md:w-[360px]" key={review._id}>
+              <TourReviewCard
+                title={review.title}
+                userName={review.user.userName}
+                avatar={review.user.avatar}
+                rating={review.rating}
+                createdAt={review.createdAt}
+                travelGroup={review.travelGroup}
+                isLoading={isLoading}
+              />
+            </div>
+          ))}
+        </Marquee>
+      </section>
+    )
+  );
+};
 
 export default TopReviews;
