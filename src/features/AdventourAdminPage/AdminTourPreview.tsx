@@ -68,7 +68,7 @@ const AdminTourPreview = () => {
           </div>
           <RenderTourImages tour={tourData.data.tour} />
           <Divider />
-          <div className="grid items-start grid-cols-2">
+          <div className="grid items-start grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="flex flex-col gap-7">
               <TourDescription tour={tourData?.data?.tour} />
               <Divider />
