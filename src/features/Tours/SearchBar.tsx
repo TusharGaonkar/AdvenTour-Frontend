@@ -55,9 +55,9 @@ const SearchBar = () => {
     (inputString: string) => {
       dispatch(resetToursQueryString());
       dispatch(setSearchToursString(inputString));
-      if (!pathname.includes('/tours')) navigate('/tours');
+      navigate('/tours');
     },
-    [dispatch, navigate, pathname]
+    [dispatch, navigate]
   );
 
   // Debounce the input change using custom hook implemented , delay of about 350 ms
