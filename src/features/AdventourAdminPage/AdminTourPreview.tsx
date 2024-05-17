@@ -36,9 +36,12 @@ const AdminTourPreview = () => {
                 <p className="text-xl sm:text-3xl font-semibold">
                   {tourData?.data?.tour?.title || 'No Title'}
                 </p>
-                <p className="text-sm underline text-slate-400">{`By ${
-                  tourData?.data?.tour?.adminName || 'No Name'
-                }`}</p>
+                <p className="text-sm  text-slate-400">
+                  {`By ${tourData?.data?.tour?.createdBy?.userName || 'No name found'}`}
+                  <span className="ml-1">
+                    ({tourData?.data?.tour?.createdBy?.email || 'No email found'})
+                  </span>
+                </p>
               </Skeleton>
             </div>
             <div className="self-end flex gap-3 items-center">
