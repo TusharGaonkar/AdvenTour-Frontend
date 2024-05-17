@@ -1,9 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 import { Chip, Skeleton } from '@nextui-org/react';
 import { MdOutlineRecommend } from 'react-icons/md';
 import StarRating from 'react-star-ratings';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import BookMarkTour from './BookMarkTour';
 
 const TourTitle = ({
   tourTitle,
@@ -36,12 +36,12 @@ const TourTitle = ({
   }
 
   return (
-    <div className="grid grid-cols-3 items-start justify-items-start w-full">
+    <div className="grid grid-cols-2 items-start justify-items-start w-full">
       <div className="col-span-2 flex flex-col items-start gap-2 p-1">
         <div className="break-all">
           <Skeleton isLoaded={isSuccess}>
             <p className="text-xl sm:text-3xl font-semibold">{tourTitle}</p>
-            <p className="text-sm underline text-slate-400">{`By ${createdBy?.userName}`}</p>
+            <p className="text-sm text-slate-400">{`By ${createdBy?.userName}`}</p>
           </Skeleton>
         </div>
         <Skeleton isLoaded={isSuccess}>
@@ -83,10 +83,6 @@ const TourTitle = ({
             </div>
           </div>
         </Skeleton>
-      </div>
-
-      <div className="p-3 justify-self-end">
-        <BookMarkTour />
       </div>
     </div>
   );
