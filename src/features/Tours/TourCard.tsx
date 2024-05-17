@@ -5,19 +5,23 @@ import StarRatings from 'react-star-ratings';
 import toast from 'react-hot-toast';
 import { ForwardedRef, forwardRef, useEffect, useState } from 'react';
 import getDistance from 'geolib/es/getDistance';
-import { useSelector } from 'react-redux';
+import { useSelector, TypedUseSelectorHook } from 'react-redux';
 import formatToINR from '../../utils/currencyFormatter';
 import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
 } from '../../redux/slices/bookmarkTourSlice';
 import CustomProgressiveImage from '../../common/CustomProgressiveImage';
+import type { RootState } from '../../redux/store';
+
+const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 function TourCardWithRef(
   { tour }: { tour: Record<string, unknown> },
   ref: ForwardedRef<HTMLDivElement>
 ) {
   const navigate = useNavigate();
+  const { isLoggedIn } = useAppSelector((state) => state.userInfo) || {};
   const [isBookmarked, setIsBookmarked] = useState<boolean>(
     () => (tour?.isBookmarked as boolean) || false
   );
@@ -27,6 +31,13 @@ function TourCardWithRef(
 
   const handleCreateBookmark = async () => {
     try {
+      if (!isLoggedIn) {
+        toast.error('Please login to bookmark the tour', {
+          className: 'text-xs font-medium',
+        });
+        navigate('/login?redirect=/tours');
+        return;
+      }
       setIsBookmarked(true);
       const response = await createBookmark(tour._id as string);
       if (response?.error) throw new Error('Something went wrong while creating bookmark');
