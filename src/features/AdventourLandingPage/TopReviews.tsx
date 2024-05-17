@@ -23,7 +23,9 @@ const TopReviews = () => {
 
   useEffect(() => {
     if (isError) {
-      toast.error(error?.message || 'Something went wrong while fetching top reviews');
+      toast.error(error?.message || 'Something went wrong while fetching top reviews', {
+        className: 'text-xs font-medium',
+      });
     }
   }, [isError, error]);
 
