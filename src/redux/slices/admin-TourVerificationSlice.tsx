@@ -14,6 +14,8 @@ const tourVerificationSlice = apiSlice.injectEndpoints({
         url: `/admin/tours/${id}`,
         method: 'GET',
       }),
+
+      providesTags: ['AdminTourPreview'],
     }),
 
     acceptTour: builder.mutation({
@@ -22,6 +24,7 @@ const tourVerificationSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: formData,
       }),
+      invalidatesTags: ['AdminTourPreview'],
     }),
 
     rejectTour: builder.mutation({
@@ -30,6 +33,7 @@ const tourVerificationSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: formData,
       }),
+      invalidatesTags: ['AdminTourPreview'],
     }),
   }),
 });
