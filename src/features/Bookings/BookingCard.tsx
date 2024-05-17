@@ -45,7 +45,7 @@ const BookingCard = ({ bookingInfo }: { bookingInfo: BookingInfoType }) => {
       if (cancelBookingResponse?.error?.data) {
         throw new Error(cancelBookingResponse.error.data.message);
       }
-
+      toast.dismiss(toastID);
       toast.success(
         'Booking cancelled successfully. Your refund will be processed soon by our admin',
         {
