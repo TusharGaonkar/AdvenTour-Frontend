@@ -212,7 +212,9 @@ const BookTour = ({
       toast.error('Please login in or sign up to book a tour', {
         className: 'text-xs font-medium',
       });
-      navigate('/login');
+
+      const pathName = window.location.pathname;
+      navigate(`/login?redirect=${pathName}`);
     } else if (user && (user.role === 'local-guide' || user.role === 'admin')) {
       toast.error('Only users can book a tour...', {
         className: 'text-xs font-medium',
