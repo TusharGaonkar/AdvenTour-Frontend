@@ -12,7 +12,7 @@ import {
   Button,
   useDisclosure,
 } from '@nextui-org/react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
@@ -109,6 +109,10 @@ const ResetEmailModal = ({
 const LoginForm = () => {
   const { isOpen, onOpenChange } = useDisclosure();
 
+  const [searchParams] = useSearchParams();
+
+  const redirect = searchParams.get('redirect');
+
   const [loginUser, { isLoading, isError, isSuccess, data: response, error }] =
     useLoginUserMutation();
 
@@ -172,8 +176,14 @@ const LoginForm = () => {
   }, [isError, isSuccess, response, error, dispatch]);
 
   useEffect(() => {
-    if (isLoggedIn) navigate(-1);
-  }, [navigate, isLoggedIn]);
+    if (isLoggedIn) {
+      if (redirect) {
+        navigate(redirect);
+      } else {
+        navigate('/tours');
+      }
+    }
+  }, [navigate, isLoggedIn, redirect]);
 
   return (
     <div className="flex flex-row justify-center items-stretch mt-10 bg-white bg-red p-7 md:flex-row">
