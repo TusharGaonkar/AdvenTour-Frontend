@@ -26,6 +26,13 @@ const TourDetailsPage = () => {
   const { data: similarToursData, isSuccess: isSimilarToursSuccess } = useGetSimilarToursQuery(id);
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
+  useEffect(() => {
     if (isError) {
       toast.error(error?.data?.message || 'Something went wrong...', {
         className: 'font-medium text-xs',
