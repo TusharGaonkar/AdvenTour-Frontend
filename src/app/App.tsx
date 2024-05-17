@@ -47,7 +47,7 @@ function App() {
         <Route
           path="/bookmarks"
           element={
-            <CheckAuthentication title="Bookmarks">
+            <CheckAuthentication title="Bookmarks" redirectPath="/bookmarks">
               <BookmarksPage />
             </CheckAuthentication>
           }
@@ -55,7 +55,7 @@ function App() {
         <Route
           path="/bookings"
           element={
-            <CheckAuthentication title="Bookings">
+            <CheckAuthentication title="Bookings" redirectPath="/bookings">
               <BookingsPage />
             </CheckAuthentication>
           }
@@ -63,7 +63,7 @@ function App() {
         <Route
           path="/contribute"
           element={
-            <CheckAuthentication title="your contributions">
+            <CheckAuthentication title="your contributions" redirectPath="/contribute">
               <ContributePage />
             </CheckAuthentication>
           }
@@ -71,7 +71,7 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <CheckAuthentication title="Guide Dashboard">
+            <CheckAuthentication title="Guide Dashboard" redirectPath="/dashboard">
               <GuideDashboard />
             </CheckAuthentication>
           }
