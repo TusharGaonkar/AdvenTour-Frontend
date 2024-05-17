@@ -1,3 +1,8 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/require-default-props */
+/* eslint-disable react/no-unused-prop-types */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable arrow-body-style */
@@ -7,8 +12,10 @@ import { useRef } from 'react';
 import { IoChevronBackCircleSharp, IoChevronForwardCircleSharp } from 'react-icons/io5';
 import { VscVerifiedFilled } from 'react-icons/vsc';
 import { MdStars } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 interface MultiCarouselProps {
+  _id: string;
   title: string;
   mainCoverImage: string;
   ratingsAverage: number;
@@ -16,7 +23,8 @@ interface MultiCarouselProps {
 }
 
 const MultiCarousel = ({ similarTours }: { similarTours: MultiCarouselProps[] }) => {
-  const containerRef = useRef<null | HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const containerRef = useRef<null | HTMLUListElement>(null);
   const cloudinaryImageOptimizeConfig = 'upload/w_1000/q_auto:low/f_auto';
 
   const gap = 12; // gap of 12 px between each image (gap-3)
@@ -63,67 +71,73 @@ const MultiCarousel = ({ similarTours }: { similarTours: MultiCarouselProps[] })
   };
 
   return (
-    <div className="p-4">
-      <h1 className="md:text-lg font-semibold mb-6"> Similar experiences</h1>
-      <div className="mx-auto relative">
-        <div
-          ref={containerRef}
-          className="flex overflow-hidden gap-3 flex-grow flex-shrink items-start"
-        >
-          {similarTours &&
-            similarTours.map(
-              ({
-                title,
-                mainCoverImage,
-                ratingsAverage,
-                commonCategories = 0,
-              }: MultiCarouselProps) => (
-                <div
-                  className="w-full sm:w-[calc(50%-12px)] md:w-[calc(33.34%-12px)] rounded-full flex-grow flex flex-col gap-1"
-                  key={title}
-                >
-                  <img
-                    src={mainCoverImage?.replace('url', cloudinaryImageOptimizeConfig)}
-                    className=" bg-no-repeat h-[140px] sm:h-[200px] md:h-[300px] object-cover rounded-xl"
-                    loading="lazy"
-                  />
+    <>
+      <h1 className="md:text-lg font-semibold p-2 mb-2">Similar experiences</h1>
+      <div className="md:px-12 px-6">
+        <div className="mx-auto relative">
+          <ul
+            ref={containerRef}
+            className="flex overflow-hidden gap-3 flex-grow flex-shrink items-start"
+          >
+            {similarTours &&
+              similarTours.map(
+                ({
+                  _id,
+                  title,
+                  mainCoverImage,
+                  ratingsAverage,
+                  commonCategories = 0,
+                }: MultiCarouselProps) => (
+                  <li
+                    className="min-w-[calc(100%-12px)] sm:min-w-[calc(50%)] md:min-w-[calc(33.34%-12px)] rounded-full flex-grow flex flex-col sm:gap-1 hover:cursor-pointer"
+                    key={title}
+                    onClick={() => navigate(`/tours/${_id}`, { replace: true })}
+                  >
+                    <img
+                      src={mainCoverImage?.replace('url', cloudinaryImageOptimizeConfig)}
+                      className=" bg-no-repeat h-[140px] sm:h-[200px] md:h-[300px] object-cover rounded-xl"
+                      loading="lazy"
+                    />
 
-                  <p className="font-semibold text-medium mx-1 text-slate-800 truncate">{title}</p>
-                  <div className="flex flex-col text-sm font-semibold gap-1">
-                    <p className=" text-slate-600 flex items-center gap-1">
-                      <span>
-                        <MdStars size={26} className="text-orange-600" />
-                      </span>
-                      {ratingsAverage === 0 ? 'No Ratings yet' : ratingsAverage}
+                    <p className="font-semibold text-medium mx-1 text-slate-800 truncate">
+                      {title}
                     </p>
-                    {commonCategories > 0 && (
-                      <p className="text-slate-600 flex items-center gap-1">
+                    <div className="flex flex-col text-sm font-semibold gap-1">
+                      <p className=" text-slate-600 flex items-center gap-1">
                         <span>
-                          <VscVerifiedFilled size={26} className="text-blue-400" />
+                          <MdStars size={18} className="text-orange-600" />
                         </span>
-                        {`Matched in ${commonCategories} categories`}
+                        {ratingsAverage === 0 ? 'No Ratings yet' : ratingsAverage.toFixed(2)}
                       </p>
-                    )}
-                  </div>
-                </div>
-              )
-            )}
-        </div>
+                      {commonCategories > 0 && (
+                        <p className="text-slate-600 flex items-center gap-1">
+                          <span>
+                            <VscVerifiedFilled size={18} className="text-blue-400" />
+                          </span>
+                          {`Matched in ${commonCategories} categories`}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                )
+              )}
+          </ul>
 
-        <button
-          className="absolute top-[30%] md:top-[35%] left-0  -translate-x-1/2  bg-white h-[40px] w-[40px] rounded-full hover:scale-110"
-          onClick={handlePrevClick}
-        >
-          <IoChevronBackCircleSharp className="h-[40px] w-[40px]  text-primary" />
-        </button>
-        <button
-          className="absolute top-[30%] md:top-[35%] right-0 translate-x-1/2 h-[40px] w-[40px] rounded-full bg-white shadow-2xl hover:scale-105"
-          onClick={handleNextClick}
-        >
-          <IoChevronForwardCircleSharp className="h-[40px] w-[40px] text-primary" />
-        </button>
+          <button
+            className="absolute top-[30%] md:top-[35%] left-2 sm:left-0 -translate-x-1/2  bg-white h-[40px] w-[40px] rounded-full hover:scale-110"
+            onClick={handlePrevClick}
+          >
+            <IoChevronBackCircleSharp className="h-[40px] w-[40px]  text-primary" />
+          </button>
+          <button
+            className="absolute top-[30%] md:top-[35%] right-2 sm:right-0 translate-x-1/2 h-[40px] w-[40px] rounded-full bg-white hover:scale-110"
+            onClick={handleNextClick}
+          >
+            <IoChevronForwardCircleSharp className="h-[40px] w-[40px] text-primary" />
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
