@@ -15,19 +15,25 @@ import {
   Textarea,
   useDisclosure,
 } from '@nextui-org/react';
-
+import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { serialize } from 'object-to-formdata';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import DropZone from '../../common/DropZone';
 import { usePostTourReviewMutation } from '../../redux/slices/tourReviewSlice';
 import tourReviewFormSchema, {
   TourReviewFormSchemaType,
 } from '../../validators/TourReviewFormValidator';
+import type { RootState } from '../../redux/store';
+
+const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const ReviewModal = ({ tourID }: { tourID: string }) => {
+  const navigate = useNavigate();
+  const { isLoggedIn } = useAppSelector((state) => state.userInfo) || {};
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [reviewImages, setReviewImages] = useState<File[] | undefined>(undefined);
   const [verified, setVerified] = useState(false);
@@ -48,6 +54,17 @@ const ReviewModal = ({ tourID }: { tourID: string }) => {
     resolver: zodResolver(tourReviewFormSchema),
     mode: 'onChange',
   });
+
+  const handleWriteReview = () => {
+    if (!isLoggedIn) {
+      const { pathname } = window.location;
+      toast.error('Please login in or sign up to write a review', {
+        className: 'text-xs font-medium',
+      });
+
+      navigate(`/login?redirect=${pathname}`);
+    } else onOpen();
+  };
 
   const handleReviewImages = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -94,7 +111,12 @@ const ReviewModal = ({ tourID }: { tourID: string }) => {
 
   return (
     <>
-      <Button variant="flat" size="md" onPress={onOpen} className="text-black rounded-full">
+      <Button
+        variant="flat"
+        size="md"
+        onPress={handleWriteReview}
+        className="text-black rounded-full"
+      >
         Write a review
       </Button>
       <Modal
