@@ -48,7 +48,14 @@ const UserDropDown = ({
           <DropdownItem key="settings" onClick={() => onOpen()}>
             Profile Settings
           </DropdownItem>
-          <DropdownItem key="logout" color="danger" onClick={() => dispatch(logoutUser())}>
+          <DropdownItem
+            key="logout"
+            color="danger"
+            onClick={() => {
+              dispatch(logoutUser());
+              window.location.reload(); // reset the states in redux / components
+            }}
+          >
             Logout
           </DropdownItem>
         </DropdownMenu>
