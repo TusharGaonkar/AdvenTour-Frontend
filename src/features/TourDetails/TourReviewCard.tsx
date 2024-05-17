@@ -1,3 +1,4 @@
+import { PhotoProvider, PhotoView } from 'react-photo-view';
 import {
   Avatar,
   Card,
@@ -35,9 +36,6 @@ const TourReviewCard = ({
   reviewImages = [],
   isLoading,
 }: TourReviewCardProps) => {
-  if (!title || !userName || !rating || !createdAt) {
-    return null;
-  }
   const descriptionLengthLimit = 300;
   const [descriptionSliced, setDescriptionSliced] = useState(
     description?.slice(0, descriptionLengthLimit) || ''
@@ -102,18 +100,22 @@ const TourReviewCard = ({
               {isReadMore ? 'Read More' : 'Read Less'}
             </button>
           )}
-          {reviewImages && reviewImages.length > 0 && (
-            <div className="flex gap-1 items-center">
-              {reviewImages?.map((image: string) => (
-                <Image
-                  key={image}
-                  src={image}
-                  alt={title}
-                  className="object-cover rounded-xl w-[105px] p-1"
-                />
-              ))}
-            </div>
-          )}
+          <PhotoProvider>
+            {reviewImages && reviewImages.length > 0 && (
+              <div className="flex gap-1 items-center cursor-pointer">
+                {reviewImages?.map((image: string) => (
+                  <PhotoView key={image} src={image}>
+                    <Image
+                      key={image}
+                      src={image}
+                      alt={title}
+                      className="object-cover rounded-xl w-[105px] p-1 border-1.5"
+                    />
+                  </PhotoView>
+                ))}
+              </div>
+            )}
+          </PhotoProvider>
         </CardHeader>
 
         <CardFooter>
