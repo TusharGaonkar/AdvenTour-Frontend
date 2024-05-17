@@ -23,7 +23,7 @@ const contributeTourFormSchema = z
       }, 'Only .jpg, .jpeg, .png and .webp formats are supported for main cover image.'),
     additionalCoverImages: z
       .array(z.any())
-      .length(2)
+      .length(2, 'Please upload at least 2 additional images.')
       .refine((fileList) => {
         if (fileList.length > 0) {
           return fileList.every((file) => ACCEPTED_IMAGE_TYPES.includes(file.type));
