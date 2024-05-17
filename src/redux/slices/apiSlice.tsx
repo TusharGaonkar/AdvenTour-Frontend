@@ -28,7 +28,14 @@ const interceptor: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>
 };
 
 const apiSlice = createApi({
-  tagTypes: ['Bookmarks', 'Tours', 'adminBookingsInfo', 'TourReviews', 'userBookings'],
+  tagTypes: [
+    'Bookmarks',
+    'Tours',
+    'adminBookingsInfo',
+    'TourReviews',
+    'userBookings',
+    'AdminTourPreview',
+  ],
   reducerPath: 'api',
   baseQuery: interceptor,
   endpoints: () => ({}),
