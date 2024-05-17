@@ -31,7 +31,7 @@ const TopToursCard = ({ tourInfo }: { tourInfo: TourInfo }) => {
         <p className="text-sm font-semibold">{tourInfo?.title}</p>
         <div className="flex items-center gap-1">
           <FaStar className="text-[#ffa534] text-[14px]" />
-          <p className="text-sm font-medium">{`Rated ${tourInfo?.ratingsAverage}`}</p>
+          <p className="text-sm font-medium">{`Rated ${tourInfo?.ratingsAverage?.toFixed(2)}`}</p>
           <p className="text-sm font-medium text-slate-500">({tourInfo?.totalRatings})</p>
         </div>
 
@@ -56,7 +56,9 @@ const TopTours = () => {
 
   useEffect(() => {
     if (isError) {
-      toast.error(error?.message || 'Something went wrong while fetching top tours');
+      toast.error(error?.message || 'Something went wrong while fetching top tours', {
+        className: 'text-xs font-medium',
+      });
     }
   }, [isError, error]);
 
