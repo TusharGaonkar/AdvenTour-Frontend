@@ -73,7 +73,7 @@ const Timeline = ({
                         <CustomProgressiveImage
                           src={activity.image.replace('upload', cloudinaryImageOptimizeConfig)}
                           alt={activity.activityName}
-                          className="object-cover h-[150px] w-[280px] sm:w-[700px] sm:h-[250px] lg:h-full lg:w-full rounded-xl cursor-pointer"
+                          className="object-cover h-[150px] sm:h-[250px] lg:h-full lg:w-full rounded-xl cursor-pointer"
                           loading="lazy"
                         />
                       </PhotoView>
