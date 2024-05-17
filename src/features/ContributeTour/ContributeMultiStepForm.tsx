@@ -94,7 +94,12 @@ const ContributeMultiStepForm = ({
         indices: true,
       });
 
-      await uploadNewTour(serializedTourData);
+      const data = await uploadNewTour(serializedTourData);
+      if (data?.status === 'fail') throw new Error(data?.message);
+      toast.dismiss(toastID);
+      toast.success('Tour uploaded successfully, Please wait for admin approval', {
+        className: 'text-xs font-medium',
+      });
     } catch (error) {
       toast.error('Something went wrong while uploading the tour', {
         className: 'text-xs font-medium',
@@ -124,12 +129,13 @@ const ContributeMultiStepForm = ({
       itinerary: itineraryWithDates,
     };
 
-    console.log(transformedFormData);
     const validate = contributeTourFormSchema.safeParse(transformedFormData);
 
-    console.log(validate);
     if (!validate.success) {
-      toast.error('Please fill all the required fields...', { className: 'text-xs font-medium' });
+      const firstIssue = validate.error.issues[0];
+      toast.error(`Error in ${firstIssue.path.join('.')} field\n ${firstIssue.message}`, {
+        className: 'text-xs font-medium',
+      });
     } else {
       transformedFormData.whatsIncluded = whatsIncluded;
       transformedFormData.whatsNotIncluded = whatsNotIncluded;
