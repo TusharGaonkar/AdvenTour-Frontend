@@ -142,6 +142,13 @@ class AdventourApiClientQuery implements IAdventourApiQueryClientQuery {
     return this;
   }
 
+  addFieldLimits(fields) {
+    if (Array.isArray(fields) && fields.length > 0) {
+      this.query.push(`fields="${fields.join(',')}"`);
+    }
+    return this;
+  }
+
   buildQuery() {
     return this.query.join('&');
   }
@@ -160,6 +167,14 @@ const AdventourApiClientQueryBuilder = (filterConfigFromRedux: Record<string, un
     .addSearchQuery()
     .addStartDateQuery()
     .addTourCategoryQuery()
+    .addFieldLimits([
+      'title',
+      'mainCoverImage',
+      'tourLocation',
+      'ratingsAverage',
+      'totalRatings',
+      'priceInRupees',
+    ])
     .buildQuery();
 
   return query;
