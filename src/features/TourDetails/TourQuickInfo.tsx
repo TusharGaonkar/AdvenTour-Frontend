@@ -17,8 +17,13 @@ const TourQuickInfo = ({ tour }: { tour: Record<string, unknown> }) => (
     <Chip color="default" variant="flat" startContent={<IoMdTime className="text-2xl" />}>
       {`Tour start time : ${tour?.tourStartTime}`}
     </Chip>
-    <Chip color="default" variant="flat" startContent={<RiSpeakFill className="text-2xl" />}>
-      {`Tour guide languages : ${(tour?.liveGuideLanguages as string[]).join(', ')}`}
+    <Chip
+      color="default"
+      className="text-wrap py-5 sm:py-0"
+      variant="flat"
+      startContent={<RiSpeakFill className="text-xl" />}
+    >
+      Tour Guide Languages : {(tour?.liveGuideLanguages as string[]).join(', ')}
     </Chip>
   </div>
 );
