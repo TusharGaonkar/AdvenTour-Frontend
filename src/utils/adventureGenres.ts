@@ -4,6 +4,7 @@ const adventureActivities = [
   'Mountain Biking',
   'Caving',
   'Canoeing',
+  'Boating',
   'Kayaking',
   'Rafting',
   'Zip Lining',
