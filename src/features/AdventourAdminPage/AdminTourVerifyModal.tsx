@@ -69,14 +69,14 @@ export const AcceptTourModal = ({ tourID }: { tourID: string | undefined }) => {
       });
 
       try {
-        const data = await uploadVerifiedTour(formData);
+        const postUploadMessage = await uploadVerifiedTour(formData);
 
-        if (data?.status === 'success') {
+        if (postUploadMessage?.data?.status === 'success') {
           toast.dismiss(toastID);
           toast.success('Tour accepted successfully', {
             className: 'text-xs font-medium',
           });
-        } else throw new Error(data?.message);
+        } else throw new Error(postUploadMessage?.data?.message as string);
       } catch (error) {
         toast.dismiss(toastID);
         toast.error(error?.message || 'Something went wrong, please try again...', {
