@@ -45,18 +45,21 @@ const Filters = () => {
       </div>
       {/* Desktop view */}
       <div className="lg:flex lg:flex-col lg:gap-2 lg:p-3 hidden">
-        <div className="flex items-center gap-2">
-          <p className="text-lg font-bold">Filters</p>
-          <Button
-            variant="flat"
-            color="warning"
-            size="sm"
-            onClick={() => dispatch(resetToursQueryString())}
-          >
-            Clear all filters
-          </Button>
+        <div className="sticky top-[80px]">
+          <div className="flex items-center gap-2">
+            <p className="text-lg font-bold">Filters</p>
+            <Button
+              variant="flat"
+              color="warning"
+              size="sm"
+              onClick={() => dispatch(resetToursQueryString())}
+            >
+              Clear all filters
+            </Button>
+          </div>
+
+          <TourFilterForm />
         </div>
-        <TourFilterForm />
       </div>
     </>
   );
