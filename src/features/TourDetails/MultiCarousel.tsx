@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -8,7 +9,7 @@
 /* eslint-disable arrow-body-style */
 
 // Custom implementation of responsive carousel for multi images for Adventour, no libraries used!
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IoChevronBackCircleSharp, IoChevronForwardCircleSharp } from 'react-icons/io5';
 import { VscVerifiedFilled } from 'react-icons/vsc';
 import { MdStars } from 'react-icons/md';
@@ -25,6 +26,9 @@ interface MultiCarouselProps {
 const MultiCarousel = ({ similarTours }: { similarTours: MultiCarouselProps[] }) => {
   const navigate = useNavigate();
   const containerRef = useRef<null | HTMLUListElement>(null);
+  const [isNextDisabled, setNextDisabled] = useState(false);
+  const [isPrevDisabled, setPrevDisabled] = useState(true);
+
   const cloudinaryImageOptimizeConfig = 'upload/w_1000/q_auto:low/f_auto';
 
   const gap = 12; // gap of 12 px between each image (gap-3)
@@ -47,6 +51,43 @@ const MultiCarousel = ({ similarTours }: { similarTours: MultiCarouselProps[] })
 
     return 0;
   };
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const { clientWidth, scrollWidth } = containerRef.current;
+      if (clientWidth === scrollWidth) {
+        setNextDisabled(true);
+        setPrevDisabled(true);
+      }
+    }
+
+    const handleScroll = () => {
+      if (containerRef.current) {
+        const { scrollLeft, clientWidth, scrollWidth } = containerRef.current;
+
+        if (scrollLeft + clientWidth >= scrollWidth) {
+          setNextDisabled(true);
+          setPrevDisabled(false);
+        } else if (scrollLeft === 0) {
+          setNextDisabled(false);
+          setPrevDisabled(true);
+        } else {
+          setNextDisabled(false);
+          setPrevDisabled(false);
+        }
+      }
+    };
+
+    if (containerRef.current) {
+      containerRef.current.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [containerRef]);
 
   const handleNextClick = () => {
     if (containerRef.current) {
@@ -123,18 +164,22 @@ const MultiCarousel = ({ similarTours }: { similarTours: MultiCarouselProps[] })
               )}
           </ul>
 
-          <button
-            className="absolute top-[30%] md:top-[35%] left-2 sm:left-0 -translate-x-1/2  bg-white h-[40px] w-[40px] rounded-full hover:scale-110"
-            onClick={handlePrevClick}
-          >
-            <IoChevronBackCircleSharp className="h-[40px] w-[40px]  text-primary" />
-          </button>
-          <button
-            className="absolute top-[30%] md:top-[35%] right-2 sm:right-0 translate-x-1/2 h-[40px] w-[40px] rounded-full bg-white hover:scale-110"
-            onClick={handleNextClick}
-          >
-            <IoChevronForwardCircleSharp className="h-[40px] w-[40px] text-primary" />
-          </button>
+          {!isPrevDisabled && (
+            <button
+              className="absolute top-[30%] md:top-[35%] left-2 sm:left-0 -translate-x-1/2  bg-white h-[40px] w-[40px] rounded-full hover:scale-110"
+              onClick={handlePrevClick}
+            >
+              <IoChevronBackCircleSharp className="h-[40px] w-[40px]  text-primary" />
+            </button>
+          )}
+          {!isNextDisabled && (
+            <button
+              className="absolute top-[30%] md:top-[35%] right-2 sm:right-0 translate-x-1/2 h-[40px] w-[40px] rounded-full bg-white hover:scale-110"
+              onClick={handleNextClick}
+            >
+              <IoChevronForwardCircleSharp className="h-[40px] w-[40px] text-primary" />
+            </button>
+          )}
         </div>
       </div>
     </>
