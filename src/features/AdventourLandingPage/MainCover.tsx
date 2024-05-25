@@ -6,7 +6,7 @@ import adventureActivities from '../../utils/adventureGenres';
 import { useNavigate } from 'react-router-dom';
 
 const MainCover = () => {
-  const [searchItem, setSearchItem] = useState<string>('places or activities');
+  const [searchItem, setSearchItem] = useState<string>('places');
   const navigate = useNavigate();
 
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -27,6 +27,8 @@ const MainCover = () => {
 
   useEffect(() => {
     const searchList = [
+      'places',
+      'activities',
       'Manali',
       'Rishikesh',
       'Bengaluru',
