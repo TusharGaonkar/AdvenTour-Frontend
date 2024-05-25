@@ -27,6 +27,7 @@ import BookingsPage from '../pages/BookingsPage';
 import GuideDashboard from '../pages/GuideDashboardPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import CheckAuthentication from '../common/CheckAuthentication';
+import ScrollToTop from '../common/ScrollToTop';
 
 function App() {
   const isMobile = useMediaQuery({ query: '(max-width: 640px)' }); // consistent with tailwind breakpoint
@@ -38,6 +39,7 @@ function App() {
 
   return (
     <NextUIProvider>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<AdventourLandingPage />} />
         <Route path="/login" element={<LoginForm />} />
