@@ -116,7 +116,7 @@ VITE_RAZORPAY_CALLBACK_URL = "https://adventour.live/api/v-1.0/bookings/verifyPa
 5. Start the development server: `npm run start`
 6. Project will be live at `http://localhost:5173`
 
-Please note that some of the redirects from the backend might not work in development mode, for example the Google authentication and the booking success redirect to the bookings page.
+Please note that some of the features of this project, such as redirects from the backend might not work in development mode, for example the Google authentication and the booking success redirect to the bookings page along with logout.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
