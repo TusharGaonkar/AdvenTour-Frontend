@@ -50,6 +50,7 @@ AdvenTour is a platform that connects adventure seekers with local tour guides. 
 [![Zod](https://img.shields.io/badge/Zod-000000?style=for-the-badge&logo=zod)](https://github.com/colinhacks/zod)
 [![React Hook Form](https://img.shields.io/badge/React_Hook_Form-0081CB?style=for-the-badge&logo=react&logoColor=white&color=skyblue)](https://react-hook-form.com/)
 [![Razorpay](https://img.shields.io/badge/Razorpay-008000?style=for-the-badge&logo=razorpay&logoColor=white&color=blue)](https://razorpay.com/)
+[![Mapbox](https://img.shields.io/badge/Mapbox-000000?style=for-the-badge&logo=mapbox&logoColor=white&color=lightgreen)](https://www.mapbox.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 [![Vite](https://img.shields.io/badge/Vite-23272F?style=for-the-badge&logo=vite&logoColor=white&color=orange)](https://vitejs.dev/)
 
