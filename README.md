@@ -44,14 +44,14 @@ AdvenTour is a platform that connects adventure seekers with local tour guides. 
 [![Typescript](https://img.shields.io/badge/Typescript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Redux Tool Kit](https://img.shields.io/badge/Redux_Tool_Kit-764FA5?style=for-the-badge&logo=redux&logoColor=white)](https://redux.js.org/)
-[![RTK Query](https://img.shields.io/badge/Redux_Tool_Kit_Query-007ACC?style=for-the-badge&logo=redux&logoColor=white&color=FFA500)](https://redux-toolkit.js.org/)
-[![NextUI](https://img.shields.io/badge/NextUI-000000?style=for-the-badge&logo=nextui&logoColor=white&color=b0e0e6)](https://nextui.org/)
+[![RTK Query](https://img.shields.io/badge/Redux_Tool_Kit_Query-007ACC?style=for-the-badge&logo=redux&logoColor=white&color=red)](https://redux-toolkit.js.org/rtk-query/overview)
+[![NextUI](https://img.shields.io/badge/NextUI-000000?style=for-the-badge&logo=nextui&logoColor=white&color=purple)](https://nextui.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Zod](https://img.shields.io/badge/Zod-000000?style=for-the-badge&logo=zod)](https://github.com/colinhacks/zod)
-[![React Hook Form](https://img.shields.io/badge/React_Hook_Form-0081CB?style=for-the-badge&logo=react&logoColor=white)](https://react-hook-form.com/)
-[![Razorpay](https://img.shields.io/badge/Razorpay-008000?style=for-the-badge&logo=razorpay&logoColor=white)](https://razorpay.com/)
+[![React Hook Form](https://img.shields.io/badge/React_Hook_Form-0081CB?style=for-the-badge&logo=react&logoColor=white&color=skyblue)](https://react-hook-form.com/)
+[![Razorpay](https://img.shields.io/badge/Razorpay-008000?style=for-the-badge&logo=razorpay&logoColor=white&color=blue)](https://razorpay.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
-[![Vite](https://img.shields.io/badge/Vite-23272F?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Vite](https://img.shields.io/badge/Vite-23272F?style=for-the-badge&logo=vite&logoColor=white&color=orange)](https://vitejs.dev/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -89,7 +89,7 @@ AdvenTour is a platform that connects adventure seekers with local tour guides. 
 - **Dynamic Form Validation**: Utilized `React Hook Form` along with `Zod` to handle complex file and dynamic element validations, preventing unwanted re-rendering of form fields.
 - **Custom Components and Higher-Order Components**: Designed custom hooks and higher-order components from scratch
 
-## 🔧Setting up the project locally
+## ⚙️Setting up the project locally
 
 To set up the project locally, follow these steps:
 
@@ -116,9 +116,9 @@ VITE_RAZORPAY_CALLBACK_URL = "https://adventour.live/api/v-1.0/bookings/verifyPa
 5. Start the development server: `npm run start`
 6. Project will be live at `http://localhost:5173`
 
-⚠️Please note that some of the redirects from the backend might not work in development mode, for example the Google authentication and the booking success redirect to the bookings page.
+Please note that some of the redirects from the backend might not work in development mode, for example the Google authentication and the booking success redirect to the bookings page.
 
-Please note that google
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!--Contributing -->
 
@@ -132,16 +132,12 @@ If you have a suggestion that would make this better, please fork the repo and c
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-Interested in contributing to the backend? Check out [Backend Repo](https://github.com/TusharGaonkar/AdvenTour-Backend)
+Interested in contributing to the backend? Check out the [backend repo](https://github.com/TusharGaonkar/AdvenTour-Backend)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## 📨Contact
+## 💬Contact
 
 Feel free to reach out if you have any queries or suggestions to improve👍
 
 Tushar Gaonkar - gaonkar.tushar01@gmail.com
-
-```
-
-```
