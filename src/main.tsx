@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './app/App';
 import { BrowserRouter } from 'react-router-dom';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Provider } from 'react-redux';
+import App from './app/App';
 import store from './app/store';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -12,5 +13,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <App />
       </BrowserRouter>
     </Provider>
+    <SpeedInsights />
   </React.StrictMode>
 );
