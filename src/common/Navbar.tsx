@@ -53,7 +53,6 @@ const UserDropDown = ({
             color="danger"
             onClick={() => {
               dispatch(logoutUser());
-              window.location.reload(); // reset the states in redux / components
             }}
           >
             Logout

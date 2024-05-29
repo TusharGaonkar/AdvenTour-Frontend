@@ -86,6 +86,7 @@ const userSlice = createSlice({
         state.user = null;
         state.token = null;
         state.isLoggedIn = false;
+        window.location.reload();
       });
   },
 });
