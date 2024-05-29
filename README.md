@@ -87,6 +87,8 @@ AdvenTour is a platform that connects adventure seekers with local tour guides. 
 ## 🚀Optimizations
 
 - **Web Vitals**: Improved the application performance by optimizing the `First Contentful Paint (FCP)` and `Largest Contentful Paint (LCP)` scores according to Web Vitals standards. This was achieved by compressing assets and serving them through `Cloudinary CDN`. Additionally, optimized the overall page load time by implementing `preloading`, `preconnect`, `lazy loading`, and `client-side caching` techniques using `RTK Query`. Furthermore, enhanced the search input functionality by integrating `debouncing`.
+  <img src="./docs/WebVitals-Adventour.png"  style="border-radius:7px; width: 100%;">
+
 - **Dynamic Form Validation**: Utilized `React Hook Form` along with `Zod` to handle complex file and dynamic element validations, preventing unwanted re-rendering of form fields.
 - **Custom Components and Higher-Order Components**: Designed custom hooks and higher-order components from scratch
 
