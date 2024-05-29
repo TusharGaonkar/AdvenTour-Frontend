@@ -200,6 +200,7 @@ const AdminLoginForm = () => {
               variant="bordered"
               placeholder="Enter your email"
               {...register('email')}
+              defaultValue={import.meta.env?.VITE_ADMIN_EMAIL}
               isInvalid={!!errors.email}
               errorMessage={errors.email?.message}
             />
@@ -209,6 +210,7 @@ const AdminLoginForm = () => {
               variant="bordered"
               placeholder="Enter your password"
               {...register('password')}
+              defaultValue={import.meta.env?.VITE_ADMIN_PASSWORD}
               isInvalid={!!errors.password}
               errorMessage={errors.password?.message}
             />

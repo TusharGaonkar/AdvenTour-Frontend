@@ -214,6 +214,7 @@ const LoginForm = () => {
               variant="bordered"
               placeholder="Enter your email"
               {...register('email')}
+              defaultValue={import.meta.env?.VITE_USER_EMAIL}
               isInvalid={!!errors.email}
               errorMessage={errors.email?.message}
             />
@@ -223,6 +224,7 @@ const LoginForm = () => {
               variant="bordered"
               placeholder="Enter your password"
               {...register('password')}
+              defaultValue={import.meta.env?.VITE_USER_PASSWORD}
               isInvalid={!!errors.password}
               errorMessage={errors.password?.message}
             />
