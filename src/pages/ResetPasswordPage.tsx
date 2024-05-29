@@ -49,7 +49,7 @@ const ResetPasswordPage = () => {
         className: 'text-xs font-semibold',
       });
 
-      window.location.href = '/login';
+      window.location.href = '/login?redirect=/';
     } catch (error) {
       toast.dismiss(toastID);
       toast.error((error?.data?.message as string) || 'Something went wrong, please try again...', {
