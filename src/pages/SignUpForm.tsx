@@ -138,7 +138,7 @@ const SignupForm = () => {
             </h2>
             <div className="flex flex-col mt-6 space-y-3 md:flex-row md:space-y-0 md:space-x-3">
               <a
-                href="https://adventour.live/api/v-1.0/auth/google"
+                href="https://adventour2025.live/api/v-1.0/auth/google"
                 className="w-full p-4 border border-gray-500 rounded-xl hover:ring-2 hover:ring-white"
               >
                 <div className="flex flex-row items-center justify-center gap-2">
